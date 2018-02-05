@@ -1,0 +1,83 @@
+<ion-menu [content]="content">
+    <ion-header>
+        <ion-toolbar color="ios-yellow" *ngIf="!user">
+            <ion-title>Login</ion-title>
+        </ion-toolbar>
+        <div class="menu-header" *ngIf="user">
+            <img class="user-avatar round" [src]="userProfImage" style="display: block; width: 40%; height: auto; margin-left: auto; margin-right: auto;"
+            />
+            <h1 class="name">{{ user?.firstName + ' ' + user?.lastName}}</h1>
+        </div>
+    </ion-header>
+
+
+    <ion-content>
+        <div class="menuFormContainer" *ngIf="!user">
+            <form [formGroup]="loginForm" (ngSubmit)="signIn(loginForm.value)" novalidate>
+                <ion-item class="form-item">
+                    <ion-label stacked color="dark">Email</ion-label>
+                    <ion-input type="email" formControlName="email"></ion-input>
+                </ion-item>
+                <ion-item class="form-item">
+                    <ion-label stacked color="dark">Password</ion-label>
+                    <ion-input type="password" formControlName="password"></ion-input>
+                </ion-item>
+                <ion-item no-lines class="form-item">
+                    <ion-label color="dark">
+                        Remember
+                    </ion-label>
+                    <ion-toggle color="danger" checked="true" [(ngModel)]="rememberMe" [ngModelOptions]="{standalone: true}"></ion-toggle>
+                </ion-item>
+
+                <ion-item class="form-item error-message" no-lines>
+                    <div *ngFor="let validation of validationMessages.email">
+                        <p *ngIf="loginForm.get('email').hasError(validation.type) && (loginForm.get('email').dirty || loginForm.get('email').touched)">
+                            *{{ validation.message }}
+                        </p>
+                    </div>
+
+                    <div *ngFor="let validation of validationMessages.password">
+                        <p *ngIf="loginForm.get('password').hasError(validation.type) && (loginForm.get('password').dirty || loginForm.get('password').touched)">
+                            *{{ validation.message }}
+                        </p>
+                    </div>
+                </ion-item>
+
+                <div class="submit-box form-item">
+                    <button ion-button round block color="blue" type="submit" [disabled]="!loginForm.valid">SIGN IN</button>
+                    <button ion-button round block type="button" block icon-left color="dark" outline (click)="goToSignup()" margin-top>
+                        <ion-icon name="ios-create"></ion-icon> Register
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="list-box" showWhen="android" *ngIf="user">
+            <ion-list>
+                <ion-item menuClose (click)="openPage(menu)" class="side-menu-item" tappable *ngFor="let menu of menuItems">
+                    <ion-icon [name]="menu.icon" color="danger" item-left></ion-icon>
+                    {{menu.name}}
+                </ion-item>
+            </ion-list>
+        </div>
+        <div class="list-box" showWhen="ios" *ngIf="user">
+            <ion-list>
+                <ion-item menuClose (click)="openPage(menu)" class="side-menu-item" tappable *ngFor="let menu of menuItems">
+                    <ion-icon [name]="menu.icon" color="danger" item-left></ion-icon>
+                    {{menu.name}}
+                </ion-item>
+            </ion-list>
+        </div>
+        <div class="list-box" hideWhen="android,ios" *ngIf="user">
+            <ion-list>
+                <ion-item menuClose (click)="openPage(menu)" class="side-menu-item" tappable *ngFor="let menu of menuItems">
+                    <ion-icon [name]="menu.icon" color="danger" item-left></ion-icon>
+                    {{menu.name}}
+                </ion-item>
+            </ion-list>
+        </div>
+    </ion-content>
+
+</ion-menu>
+
+
+<ion-nav [root]="rootPage" #content [class]="selectedTheme"></ion-nav>

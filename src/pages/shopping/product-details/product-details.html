@@ -1,0 +1,59 @@
+<ion-header>
+  <ion-navbar color="ios-yellow">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>
+      Snowflake Tours
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-grid>
+    <ion-row>
+      <div col-12>
+        <ion-card>
+          <ion-slides pager *ngIf="product?.images">
+            <ion-slide *ngFor="let image of product?.images">
+              <div>
+                <img class="productImage" [src]="image.url">
+              </div>
+            </ion-slide>
+          </ion-slides>
+          <ion-card-content>
+            <ion-card-title>
+              {{product?.shortDescription}}
+            </ion-card-title>
+            <p>
+              {{product?.longDescriptions}}
+            </p>
+
+            <ion-list>
+              <ion-list-header>
+                What you get
+              </ion-list-header>
+              <ion-item *ngFor="let feature of product?.features">{{feature.shortDescription}}</ion-item>
+
+            </ion-list>
+          </ion-card-content>
+
+          <ion-row no-padding>
+            <ion-col text-left>
+              <button ion-button clear small color="danger" icon-start>
+                <ion-icon name="logo-usd"></ion-icon>
+                {{product?.discount * 100}} %
+              </button>
+            </ion-col>
+            <ion-col text-right>
+              <button ion-button clear small color="danger" icon-start>
+                <ion-icon name="logo-usd"></ion-icon>
+                {{product?.price}}
+              </button>
+            </ion-col>
+          </ion-row>
+        </ion-card>
+      </div>
+    </ion-row>
+  </ion-grid>
+</ion-content>

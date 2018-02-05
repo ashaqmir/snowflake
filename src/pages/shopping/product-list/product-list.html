@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-navbar color="ios-yellow">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>
+      Snowflake Tours
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+
+  <ion-grid>
+    <ion-row>
+      <div col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 *ngFor="let product of products | async">
+        <ion-card tappable (click)="productDetails(product)">
+          <img [src]="product.images[0].url" />
+          <ion-card-content>
+            <ion-card-title>
+              {{product.shortDescription}}
+            </ion-card-title>
+            <p>
+              {{product.longDescriptions}}
+            </p>
+          </ion-card-content>
+
+          <ion-row no-padding>
+            <ion-col text-left>
+              <button ion-button clear small color="danger" icon-start>
+                <ion-icon name="logo-usd"></ion-icon>
+                {{product.discount * 100}} %
+              </button>
+            </ion-col>
+            <ion-col text-right>
+              <button ion-button clear small color="danger" icon-start>
+                <ion-icon name="logo-usd"></ion-icon>
+                {{product.price}}
+              </button>
+            </ion-col>
+          </ion-row>
+        </ion-card>
+      </div>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

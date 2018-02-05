@@ -1,0 +1,33 @@
+page-consumer-signup {
+    .auth-form-container {
+        position: absolute;
+        top: 0;
+        padding: 10vw;
+        text-align: center;
+        width: 100%;
+        margin: 0 auto;
+        z-index: 2;
+    }
+  
+    .scroll-content {
+        margin-top: 0 !important;
+    }
+    .error-message p {
+        text-align: right;
+        color: rgb(163, 32, 32);
+    }
+    .submit-box {
+        margin-top: 10px;
+        text-align: center;
+    }
+    ion-item {
+        padding-left: 0px !important; // margin-bottom: 10px;
+        background-color: transparent !important;
+        font-size: 0.9em;
+    }
+    .custom-checkbox {
+        .item-cover {
+            width: 10%;
+        }
+    }
+}

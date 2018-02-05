@@ -1,0 +1,8 @@
+{
+  "name": "snowflake",
+  "app_id": "aa2cff5f",
+  "type": "ionic-angular",
+  "integrations": {
+    "cordova": {}
+  }
+}

@@ -1,0 +1,15 @@
+<ion-header no-border>
+  <ion-navbar transparent color="light">
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <div class="verification-container">
+    <img class="logo" src="assets/imgs/logo.png" />
+    <h2>Email not verified</h2>
+    <p>Please verify you email id by clicking on the link provided in your verification email.</p>    
+  </div>
+</ion-content>
+<ion-footer>
+  <button class="bottom" ion-button type="button" clear full color="light" (click)="resendVerificationEmail()">Resend verification email</button>
+</ion-footer>

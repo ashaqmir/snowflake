@@ -1,0 +1,34 @@
+<ion-header no-border>
+  <ion-navbar transparent color="light">
+    <button ion-button menuToggle>
+      <ion-icon name="menu" color="light"></ion-icon>
+    </button>
+  </ion-navbar>
+</ion-header>
+
+<ion-content >
+  <div class="auth-form-container">
+    <img class="logo" src="assets/imgs/logo.png" />
+
+    <form [formGroup]="resetPasswordForm" (submit)="resetPassword()" novalidate>
+
+      <ion-item>
+        <ion-label stacked>Email</ion-label>
+        <ion-input tappable formControlName="email" type="email" placeholder="Your email address"></ion-input>
+      </ion-item>
+
+      <ion-item class="error-message" no-lines>
+          <div *ngFor="let validation of validationMessages.email">
+              <p *ngIf="resetPasswordForm.get('email').hasError(validation.type) && (resetPasswordForm.get('email').dirty || resetPasswordForm.get('email').touched)">
+                *{{ validation.message }}
+              </p>
+            </div>
+        
+      </ion-item>
+
+     
+      <button ion-button round block color="blue" type="submit" [disabled]="!resetPasswordForm.valid">RESET PASSWORD</button>
+    </form>
+
+  </div>
+</ion-content>

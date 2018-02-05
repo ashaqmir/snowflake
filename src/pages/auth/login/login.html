@@ -1,0 +1,50 @@
+<ion-content>
+  <div class="auth-form-container">
+    <img class="logo" src="assets/imgs/logo.png" />
+
+
+    <!-- **************LOGIN FORM************** -->
+    <form [formGroup]="loginForm" (ngSubmit)="signIn(loginForm.value)" novalidate>
+      <ion-item>
+        <ion-label floating>Email</ion-label>
+        <!-- <ion-label fixed>Email</ion-label> -->
+        <!-- <ion-icon name="at" fixed></ion-icon> -->
+        <ion-input type="email" formControlName="email"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Password</ion-label>
+        <ion-input type="password" formControlName="password"></ion-input>
+      </ion-item>
+      <ion-item no-lines>
+        <ion-label>
+          Remember me
+        </ion-label>
+        <ion-toggle color="danger" checked="true" [(ngModel)]="rememberMe" [ngModelOptions]="{standalone: true}"></ion-toggle>
+      </ion-item>
+
+      <ion-item class="error-message" no-lines>
+        <div *ngFor="let validation of validationMessages.email">
+          <p *ngIf="loginForm.get('email').hasError(validation.type) && (loginForm.get('email').dirty || loginForm.get('email').touched)">
+            *{{ validation.message }}
+          </p>
+        </div>
+
+        <div *ngFor="let validation of validationMessages.password">
+          <p *ngIf="loginForm.get('password').hasError(validation.type) && (loginForm.get('password').dirty || loginForm.get('password').touched)">
+            *{{ validation.message }}
+          </p>
+        </div>
+      </ion-item>
+
+      <div class="submit-box">
+        <button ion-button round block color="blue" type="submit" [disabled]="!loginForm.valid">SIGN IN</button>
+        <button ion-button round type="button" block icon-left color="dark" outline (click)="goToSignupOptions()" margin-top>
+          <ion-icon name="ios-create"></ion-icon> Create new account
+        </button>
+      </div>
+    </form>
+  </div>
+</ion-content>
+<ion-footer>
+  <button class="bottom" ion-button type="button" clear full color="light" (click)="forgot()">Forgot your password? </button>
+</ion-footer>

@@ -1,0 +1,90 @@
+<ion-header no-border>
+  <ion-navbar transparent>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <div class="auth-form-container">
+    <img class="logo" src="assets/imgs/logo.png" />
+
+    <!-- ******** CUSTOMER FOR ********* -->
+    <form class="form" [formGroup]="customerForm" (ngSubmit)="onSubmit(customerForm.value)" novalidate>
+      <ion-item>
+        <ion-label>First name</ion-label>
+        <ion-input type="text" formControlName="firstName"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label >Last name</ion-label>
+        <ion-input type="text" formControlName="lastName"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label >Phone</ion-label>
+        <ion-label color="danger">+1</ion-label>
+        <ion-input type="number" formControlName="phone"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Email</ion-label>
+        <ion-input type="email" formControlName="email"></ion-input>
+      </ion-item>
+
+      <div formGroupName="password">
+        <ion-item>
+          <ion-label>Password</ion-label>
+          <ion-input type="password" formControlName="password"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Confirm Password</ion-label>
+          <ion-input type="password" formControlName="confirmPassword"></ion-input>
+        </ion-item>
+      </div>
+      <ion-item no-padding  class="custom-checkbox">
+        <ion-label>I agree
+          <a (click)="conditions()">Terms and Conditions</a>
+        </ion-label>        
+        <ion-checkbox color="danger" formControlName="terms"></ion-checkbox>
+      </ion-item>
+
+      <ion-item class="error-message" no-lines>
+        <div *ngFor="let validation of validationMessages.firstname">
+          <p class="error-message" *ngIf="customerForm.get('firstName').hasError(validation.type) && (customerForm.get('firstName').dirty || customerForm.get('firstName').touched)">
+            *{{ validation.message }}
+          </p>
+        </div>
+
+        <div *ngFor="let validation of validationMessages.lastname">
+          <p class="error-message" *ngIf="customerForm.get('lastName').hasError(validation.type) && (customerForm.get('lastName').dirty || customerForm.get('lastName').touched)">
+            *{{ validation.message }}
+          </p>
+        </div>
+        <div *ngFor="let validation of validationMessages.phone">
+          <p class="error-message" *ngIf="customerForm.get('phone').hasError(validation.type) && (customerForm.get('phone').dirty || customerForm.get('phone').touched)">
+            *{{ validation.message }}
+          </p>
+        </div>
+        <div *ngFor="let validation of validationMessages.email">
+          <p *ngIf="customerForm.get('email').hasError(validation.type) && (customerForm.get('email').dirty || customerForm.get('email').touched)">
+            *{{ validation.message }}
+          </p>
+        </div>
+        <div *ngFor="let validation of validationMessages.password">
+          <p *ngIf="customerForm.get('password').get('password').hasError(validation.type) && (customerForm.get('password').get('password').dirty || customerForm.get('password').get('password').touched)">
+            *{{ validation.message }}
+          </p>
+        </div>
+        <div *ngFor="let validation of validationMessages.confirmPassword">
+          <p *ngIf="customerForm.get('password').get('confirmPassword').hasError(validation.type) && (customerForm.get('password').get('confirmPassword').dirty || customerForm.get('password').get('confirmPassword').touched)">
+            *{{ validation.message }}
+          </p>
+        </div>
+        <div *ngFor="let validation of validationMessages.terms">
+          <p *ngIf="customerForm.get('terms').hasError(validation.type) && (customerForm.get('terms').dirty || customerForm.get('terms').touched)">
+            *{{ validation.message }}
+          </p>
+        </div>
+      </ion-item>
+
+      <button ion-button round block color="blue" type="submit" [disabled]="!customerForm.valid">SIGN UP</button>
+    </form>
+  </div>
+</ion-content>
