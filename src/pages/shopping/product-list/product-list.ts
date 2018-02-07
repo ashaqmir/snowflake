@@ -2,13 +2,12 @@ import { Component } from "@angular/core";
 import {
   IonicPage,
   NavController,
-  NavParams,
-  PopoverController
+  NavParams
 } from "ionic-angular";
-import { ProductServiceProvider } from "../../../providers/product-service/product-service";
 import { LoadingController } from "ionic-angular/components/loading/loading-controller";
 import { Observable } from "rxjs/Observable";
 import { IProduct } from "../../../models/product";
+import { ProductServiceProvider } from "../../../providers/provider";
 
 @IonicPage()
 @Component({
@@ -22,7 +21,6 @@ export class ProductListPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public loadingCtrl: LoadingController,
-    private popoverCtrl: PopoverController,
     private prodSvc: ProductServiceProvider
   ) {}
 
@@ -36,18 +34,6 @@ export class ProductListPage {
     this.products = this.prodSvc.getProductsList();
 
     loadingPopup.dismiss();
-  }
-
-  ionViewDidLoad() {
-    console.log("ionViewDidLoad ProductListPage");
-  }
-
-  presentPopover(event) {
-    console.log("Menu Clicked");
-    let popover = this.popoverCtrl.create("UserOptionsPage");
-    popover.present({
-      ev: event
-    });
   }
 
   productDetails(product) {

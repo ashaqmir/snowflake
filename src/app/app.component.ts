@@ -31,10 +31,9 @@ export class MyApp {
   menuItems: Array<any> = [];
   userProfImage: string = "assets/imgs/chatterplace.png";
   user: IProfile;
-  appState: any;
+  private appState: any;
   loginForm: FormGroup;
-  rememberMe: false;
-
+  rememberMe: true;
   constructor(
     platform: Platform,
     public statusBar: StatusBar,
@@ -49,15 +48,10 @@ export class MyApp {
     appState: AppStateServiceProvider
   ) {
     this.appState = appState;
+    this.rememberMe = true;
     this.createForm();
     platform.ready().then(() => {
       this.initializeApp();
-      this.storageProvider.getLastUser().then(lastUsr => {
-        console.log(lastUsr);
-        if (lastUsr && lastUsr.email && lastUsr.password) {
-          this.signIn(lastUsr);
-        }
-      });
     });
   }
 
@@ -117,6 +111,8 @@ export class MyApp {
                     email: email,
                     password: password
                   });
+                } else {
+                  this.storageProvider.removeLastUser();
                 }
 
                 loadingPopup.dismiss();
@@ -159,7 +155,7 @@ export class MyApp {
     }
   }
   goToSignup() {
-    this.nav.push("ConsumerSignupPage").then(() => {
+    this.nav.push("SignupPage").then(() => {
       this.menuCtrl.close();
     });
   }
@@ -167,7 +163,12 @@ export class MyApp {
     if (page.type === "page") {
       this.updateActive();
       page.isActive = true;
-      this.nav.push(page.componentName).catch(err => console.error(err));
+      this.nav
+        .push(page.componentName)
+        .then(val => {
+          this.menuCtrl.close();
+        })
+        .catch(err => console.error(err));
       this.menuCtrl.close();
     } else if (page.type.startsWith("action")) {
       this.doAction(page.type);
@@ -202,28 +203,22 @@ export class MyApp {
         ])
       )
     });
+
+    this.storageProvider.getLastUser().then(lstUsr => {
+      console.log(lstUsr);
+      if (lstUsr && lstUsr.email && lstUsr.password) {
+        this.loginForm.get("email").setValue(lstUsr.email);
+        this.loginForm.get("password").setValue(lstUsr.password);
+      }
+    });
   }
 
   createMenuItems() {
     this.menuItems = [
       {
         icon: "cart",
-        name: "Shopping",
+        name: "Your Packages",
         componentName: "ProductListPage",
-        type: "page",
-        isActive: false
-      },
-      {
-        icon: "calendar",
-        name: "Appointments",
-        componentName: "ConsumerAppointmentsPage",
-        type: "page",
-        isActive: false
-      },
-      {
-        icon: "bicycle",
-        name: "Health",
-        componentName: "HealthPage",
         type: "page",
         isActive: false
       },

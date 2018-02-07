@@ -27,16 +27,16 @@
           </ion-card-content>
 
           <ion-row no-padding>
-            <ion-col text-left>
+            <ion-col text-left col-6>
               <button ion-button clear small color="danger" icon-start>
-                <ion-icon name="logo-usd"></ion-icon>
+                Discount
                 {{product.discount * 100}} %
               </button>
             </ion-col>
-            <ion-col text-right>
+            <ion-col text-right col-6>
               <button ion-button clear small color="danger" icon-start>
-                <ion-icon name="logo-usd"></ion-icon>
-                {{product.price}}
+                Price 
+                {{product.price | currency:'INR':true}}
               </button>
             </ion-col>
           </ion-row>

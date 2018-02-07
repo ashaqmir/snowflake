@@ -4,10 +4,10 @@ import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angul
 
 @IonicPage()
 @Component({
-  selector: 'page-consumer-conditions',
-  templateUrl: 'consumer-conditions.html',
+  selector: 'page-conditions',
+  templateUrl: 'conditions.html',
 })
-export class ConsumerConditionsPage {
+export class ConditionsPage {
 
   constructor(public navCtrl: NavController, 
     public navParams: NavParams,

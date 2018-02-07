@@ -25,7 +25,13 @@ export class AuthServiceProvider {
   }
 
   loginUser(newEmail: string, newPassword: string): Promise<any> {
-    return this.afAuth.auth.signInWithEmailAndPassword(newEmail, newPassword);
+    return this.afAuth.auth
+      .signInWithEmailAndPassword(newEmail, newPassword)
+      .then(uState => {
+        console.log(uState.uid);
+        this.setAuthState(uState.uid);
+        return uState;
+      });
   }
 
   resetPassword(email: string): Promise<any> {
@@ -37,7 +43,7 @@ export class AuthServiceProvider {
     if (!this.appState.userProfile) {
       this.events.publish("user:logout", this.appState.userProfile);
     }
-    console.log('user logedout...');
+    console.log("user logedout...");
     return this.afAuth.auth.signOut();
   }
 
@@ -47,6 +53,11 @@ export class AuthServiceProvider {
 
   updateUserProfile(userProfile: IProfile, uid: string): Promise<any> {
     return this.afDb.object(`${this.basePath}/${uid}`).set(userProfile);
+  }
+
+  updateProfileProps(userId, value) {
+    const profRef = this.afDb.object(`/${this.basePath}/${userId}`);
+    profRef.update(value);
   }
 
   deleteUserProfile(uid: string): Promise<any> {
@@ -86,6 +97,7 @@ export class AuthServiceProvider {
         const userProfile = profData.payload.val();
         if (userProfile) {
           this.appState.userProfile = userProfile;
+          this.appState.userProfile.$key = profData.key;
           if (this.appState.userProfile) {
             this.events.publish("profile:recieved", this.appState.userProfile);
           }
@@ -93,5 +105,14 @@ export class AuthServiceProvider {
         }
       });
     });
+  }
+
+  private setAuthState(uid) {
+    this.getUserProfile(uid).then(() => {
+      this.appState.loginState = true;
+    });
+  }
+  private clearAuthState(uid) {
+    this.appState.clearData();
   }
 }

@@ -1,20 +1,20 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ToastController, ModalController } from 'ionic-angular';
 import { FormGroup, Validators, FormControl, FormBuilder } from '@angular/forms';
-import { PasswordValidator } from '../../../../validators/password-validator';
+import { PasswordValidator } from '../../../validators/password-validator';
 
 
 import { LoadingController } from 'ionic-angular/components/loading/loading-controller';
 import * as firebase from 'firebase';
-import { IProfile } from '../../../../models/profile';
-import { AuthServiceProvider } from '../../../../providers/auth-service/auth-service';
+import { IProfile } from '../../../models/profile';
+import { AuthServiceProvider } from '../../../providers/provider';
 
 @IonicPage()
 @Component({
-  selector: 'page-consumer-signup',
-  templateUrl: 'consumer-signup.html',
+  selector: 'page-signup',
+  templateUrl: 'signup.html',
 })
-export class ConsumerSignupPage {
+export class SignupPage {
   customerForm: FormGroup;
   matchingPasswordsGroup: FormGroup;
   profile: IProfile;
@@ -148,7 +148,7 @@ export class ConsumerSignupPage {
   }
 
   conditions() {
-    let conditionModal = this.modalCtrl.create('ConsumerConditionsPage');
+    let conditionModal = this.modalCtrl.create('ConditionsPage');
     conditionModal.onDidDismiss(data => {
       let condition = data.condition;
       if (condition) {

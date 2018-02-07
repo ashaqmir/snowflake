@@ -1,0 +1,158 @@
+<ion-header>
+  <ion-navbar color="ios-yellow">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>
+      Snowflake Tours
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-card>
+    <ion-card-header>
+      Contact Address
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item *ngIf="shippingAddress">
+        <ion-icon name="locate" item-start large></ion-icon>
+        <h2>{{shippingAddress.street}}</h2>
+        <p>{{shippingAddress.city}}, {{shippingAddress.region}} {{shippingAddress.zip}}</p>
+        <h2>{{shippingAddress.country}}</h2>
+      </ion-item>
+      <ion-item *ngIf="!shippingAddress">
+        <ion-icon name="alert" item-start large></ion-icon>
+        <h2>No addres on file! Please add one</h2>
+      </ion-item>
+    </ion-card-content>
+    <ion-item>
+      <button ion-button icon-left clear item-end *ngIf="shippingAddress" (click)="changeAddress()">
+        <ion-icon name="attach"></ion-icon>
+        Change
+      </button>
+      <button ion-button icon-left clear item-end (click)="addAddress()">
+        <ion-icon name="add"></ion-icon>
+        Add
+      </button>
+    </ion-item>
+  </ion-card>
+
+  <ion-card>
+    <div *ngIf="!product">
+      <h1>No items added. Please go to the menu to order.</h1>
+    </div>
+
+    <ion-grid *ngIf="product">
+      <ion-row>
+        <ion-col>
+          <h2>{{product.name}}</h2>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col col-8>
+          <h3>Price</h3>
+        </ion-col>
+        <ion-col col-4>
+          <h3 class="num-feild"> {{product.discountPrice | currency:'INR':true}}</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col col-8>
+          <h3>Tax</h3>
+        </ion-col>
+        <ion-col col-4>
+          <h3 class="num-feild">{{product.taxPer * 100 }} %</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row align-items-center>
+        <ion-col col-6>
+          <h3>Person(s)</h3>
+        </ion-col>
+        <ion-col col-6>
+          <ion-row align-items-center justify-content-between>
+            <ion-col col-4>
+              <button ion-button color="danger" clear icon-only (click)="removePersons()">
+                <ion-icon name='remove-circle' is-active="false"></ion-icon>
+              </button>
+            </ion-col>
+            <ion-col col-4 align-self-center>
+              <h3 style="text-align:center">{{currentPersons}}</h3>
+            </ion-col>
+            <ion-col col-4>
+              <button ion-button color="success" clear icon-only (click)="addPersons()">
+                <ion-icon name='add-circle' is-active="false"></ion-icon>
+              </button>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col col-8>
+          <h3>You pay</h3>
+        </ion-col>
+        <ion-col col-4>
+          <h3 class="num-feild">{{totalPrice | currency:'INR':true}}</h3>
+        </ion-col>
+      </ion-row>
+
+    </ion-grid>
+  </ion-card>
+  <!-- <ion-card>
+    <ion-card-header>
+      Legal
+    </ion-card-header>
+    <ion-list radio-group [(ngModel)]="kitFor">
+      <ion-list-header>
+        DNA kit will be used for:
+      </ion-list-header>
+      <ion-item>
+        <ion-label>Me</ion-label>
+        <ion-radio checked="true" value="me" (ionSelect)="kitForOptionChange()" checked="true"></ion-radio>
+      </ion-item>
+      <ion-item>
+        <ion-label>Other Person</ion-label>
+        <ion-radio value="other" (ionSelect)="kitForOptionChange()"></ion-radio>
+      </ion-item>
+    </ion-list>
+  </ion-card> -->
+  <!-- <div class="kitfor-form-container">
+    <form class="form" [formGroup]="kitForForm" (ngSubmit)="purchase(kitForForm.value)">
+      <ion-item>       
+        <ion-input type="text" formControlName="firstName" placeholder="First name"></ion-input>
+      </ion-item>
+      <ion-item>        
+        <ion-input type="text" formControlName="lastName" placeholder="Last name"></ion-input>
+      </ion-item>
+      <ion-item>      
+        <ion-datetime displayFormat="MM/DD/YYYY" formControlName="dob" placeholder="Date of birth" class="dob"></ion-datetime>
+      </ion-item>
+
+      <ion-item no-lines>
+        <div *ngFor="let validation of validationMessages.firstName">
+          <p class="error-message" *ngIf="kitForForm.get('firstName').hasError(validation.type) && (kitForForm.get('firstName').dirty || kitForForm.get('firstName').touched)">
+            *{{ validation.message }}
+          </p>
+        </div>
+        <div *ngFor="let validation of validationMessages.lastName">
+          <p class="error-message" *ngIf="kitForForm.get('lastName').hasError(validation.type) && (kitForForm.get('lastName').dirty || kitForForm.get('lastName').touched)">
+            *{{ validation.message }}
+          </p>
+        </div>
+
+        <div *ngFor="let validation of validationMessages.dob">
+          <p class="error-message" *ngIf="kitForForm.get('dob').hasError(validation.type) && (kitForForm.get('dob').dirty || kitForForm.get('dob').touched)">
+            *{{ validation.message }}
+          </p>
+        </div>
+      </ion-item>
+
+      <ion-item no-lines>
+        <button ion-button large full outline (click)="purchase()" [disabled]="!kitForForm.valid">Pay</button>
+      </ion-item>
+    </form>
+  </div> -->
+</ion-content>

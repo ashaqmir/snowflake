@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, PopoverController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { IProduct } from '../../../models/product';
 
 
@@ -12,13 +12,7 @@ export class ProductDetailsPage {
 
   product: IProduct;
   constructor(public navCtrl: NavController,
-     public navParams: NavParams,
-     private popoverCtrl: PopoverController) {
-  }
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad ProductDetailsPage');
-    
+     public navParams: NavParams) {
   }
 
   ngOnInit() {
@@ -29,10 +23,8 @@ export class ProductDetailsPage {
     console.log(this.product);
   }
 
-  presentPopover(event) {
-    let popover = this.popoverCtrl.create('UserOptionsPage')
-    popover.present({
-      ev: event
-    });
+  addToCart() {
+    console.log('Add to cart.');
+    this.navCtrl.push('CartPage', { selectedProduct: this.product });
   }
 }

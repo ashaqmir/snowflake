@@ -1,0 +1,77 @@
+<ion-content padding>
+  <div class="address-form-container">
+    <!-- <img class="logo" src="assets/imgs/logo.png" /> -->
+    <h4>Address Details</h4>
+    <form class="form" [formGroup]="addressForm" (ngSubmit)="onSubmit(addressForm.value)">
+      <ion-item>
+        <ion-label color="primary">Make it default</ion-label>
+        <ion-toggle color="danger" formControlName="isDefault"></ion-toggle>
+      </ion-item>
+      <ion-item>
+        <ion-label color="primary">Stree/Building</ion-label>
+        <ion-input type="text" formControlName="street"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label color="primary">City</ion-label>
+        <ion-input type="text" formControlName="city"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label color="primary">Country</ion-label>
+        <ion-select formControlName="country" (ionChange)="getRegions()" cancelText="Cancel" okText="OK" interface="popover">
+          <ion-option *ngFor="let ctry of countries" [value]="ctry">{{ctry.name}}</ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label color="primary">State/Province</ion-label>
+        <ion-select formControlName="region" cancelText="Cancel" okText="OK" interface="popover">
+          <ion-option *ngFor="let rgn of selectedRegions" [value]="rgn">{{rgn.name}}</ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label color="primary">Zip</ion-label>
+        <ion-input type="number" formControlName="zip"></ion-input>
+      </ion-item>
+
+      <ion-item class="error-message">
+
+        <div *ngFor="let validation of validationMessages.street">
+          <p class="error-message" *ngIf="addressForm.get('street').hasError(validation.type) && (addressForm.get('street').dirty || addressForm.get('street').touched)">
+            *{{ validation.message }}
+          </p>
+        </div>
+        <div *ngFor="let validation of validationMessages.city">
+          <p class="error-message" *ngIf="addressForm.get('city').hasError(validation.type) && (addressForm.get('city').dirty || addressForm.get('city').touched)">
+            *{{ validation.message }}
+          </p>
+        </div>
+
+        <div *ngFor="let validation of validationMessages.country">
+          <p class="error-message" *ngIf="addressForm.get('country').hasError(validation.type) && (addressForm.get('country').dirty || addressForm.get('country').touched)">
+            *{{ validation.message }}
+          </p>
+        </div>
+        <div *ngFor="let validation of validationMessages.region">
+          <p class="error-message" *ngIf="addressForm.get('region').hasError(validation.type) && (addressForm.get('region').dirty || addressForm.get('region').touched)">
+            *{{ validation.message }}
+          </p>
+        </div>
+
+
+        <div *ngFor="let validation of validationMessages.zip">
+          <p class="error-message" *ngIf="addressForm.get('zip').hasError(validation.type) && (addressForm.get('zip').dirty || addressForm.get('zip').touched)">
+            *{{ validation.message }}
+          </p>
+        </div>
+      </ion-item>
+
+
+      <div class="submit-box">
+        <button ion-button round block color="blue" type="submit" [disabled]="!addressForm.valid">SAVE</button>
+      </div>
+
+      <div class="submit-box">
+        <button ion-button round block color="danger" type="button" (click)="close()">CANCEL</button>
+      </div>
+    </form>
+  </div>
+</ion-content>

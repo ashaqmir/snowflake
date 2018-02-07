@@ -78,8 +78,8 @@ ion-navbar {
   //width: 70%;
   width: auto;
   height: auto;
-  padding-top: 2vh;
-  margin-bottom: 2vh;
+  //padding-top: 2vh;
+  //margin-bottom: 2vh;
 }
 
 .menuFormContainer {
@@ -87,9 +87,9 @@ ion-navbar {
   -webkit-border-radius: 10px; /* for Webkit-Browsers */
   border-radius: 10px; /* regular */
   border: 1px solid black;
-  opacity: 0.5; /* Transparent Background 50% */
-  margin: 3px;
-  padding: 3px;
+  opacity: 0.85; /* Transparent Background 50% */
+  margin: 5px;
+  padding: 5px;
 
   .form-item {
     background: none;

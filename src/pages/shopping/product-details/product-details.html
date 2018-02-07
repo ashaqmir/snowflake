@@ -14,6 +14,7 @@
     <ion-row>
       <div col-12>
         <ion-card>
+          <div *ngIf="product?.isHot" class="ribbon">HOT</div>
           <ion-slides pager *ngIf="product?.images">
             <ion-slide *ngFor="let image of product?.images">
               <div>
@@ -41,14 +42,25 @@
           <ion-row no-padding>
             <ion-col text-left>
               <button ion-button clear small color="danger" icon-start>
-                <ion-icon name="logo-usd"></ion-icon>
                 {{product?.discount * 100}} %
               </button>
             </ion-col>
             <ion-col text-right>
-              <button ion-button clear small color="danger" icon-start>
-                <ion-icon name="logo-usd"></ion-icon>
-                {{product?.price}}
+              <button ion-button clear small color="danger" icon-start style="text-decoration: line-through;">
+                {{product?.price | currency:'INR':true}}
+              </button>
+            </ion-col>
+          </ion-row>
+          <ion-row no-padding>
+            <ion-col text-left>
+              <button ion-button clear small color="primary" icon-start>
+                {{product?.discountPrice | currency:'INR':true}}
+              </button>
+            </ion-col>
+            <ion-col text-right>
+              <button ion-button clear small color="primary" icon-start>
+                <ion-icon name="people"></ion-icon>
+                {{product?.pricefor}} Person(s)
               </button>
             </ion-col>
           </ion-row>
@@ -57,3 +69,11 @@
     </ion-row>
   </ion-grid>
 </ion-content>
+<ion-footer no-border>
+  <ion-toolbar color="red">
+    <button ion-button full clear icon-left (click)="addToCart()" color="light" [disabled]="!product">
+      <ion-icon name="ios-cart"></ion-icon>
+      Buy
+    </button>
+  </ion-toolbar>
+</ion-footer>

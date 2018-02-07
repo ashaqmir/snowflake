@@ -1,0 +1,24 @@
+page-address-form {
+  .address-form-container {
+    -moz-border-radius: 10px; /* for Firefox */
+    -webkit-border-radius: 10px; /* for Webkit-Browsers */
+    border-radius: 10px; /* regular */
+    border: 1px solid black;
+    padding: 10vw;
+    text-align: center;
+    width: 100%;
+  }
+  .error-message p {
+    text-align: right;
+    color: rgb(163, 32, 32);
+  }
+  .submit-box {
+    margin-top: 10px;
+    text-align: center;
+  }
+  ion-item {
+    padding-left: 0px !important; // margin-bottom: 10px;
+    background-color: transparent !important;
+    font-size: 0.9em;
+  }
+}

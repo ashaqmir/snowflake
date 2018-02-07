@@ -1,0 +1,41 @@
+<ion-header no-border>
+  <ion-navbar transparent color="lightblue">
+    <button ion-button menuToggle>
+      <ion-icon name="menu" color="light"></ion-icon>
+    </button>
+  </ion-navbar>
+</ion-header>
+
+<ion-content fullscreen="true" no-padding>
+
+  <div class="profile-box">
+    <div text-center>
+      <img [src]="profilePicture" class="user-avatar pop-in" alt="" (click)="showImageOption()">
+      <div class="name-text">{{userProfile?.firstName + ' ' + userProfile?.lastName }}
+        <div class="tools" (click)="showNameDialog()">
+          <ion-icon name="create" item-right></ion-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div padding>
+    <ion-list no-lines>
+      <ion-item class="profile-item">
+        <ion-icon name="ios-mail" item-left></ion-icon>
+        <h2>{{email}}</h2>
+      </ion-item>
+
+
+      <ion-item class="profile-item">
+        <ion-icon name="ios-call" item-left></ion-icon>
+        <h2>{{userProfile?.phone}}</h2>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <button ion-button round block color="blue2" [disabled]="!profileChanged" (click)="saveProfileImage()">
+    Save
+  </button>
+
+</ion-content>

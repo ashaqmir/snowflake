@@ -1,7 +1,7 @@
 import { IonicPage, NavController, LoadingController, AlertController } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { FormBuilder, Validators, FormControl } from '@angular/forms';
-import { AuthServiceProvider } from '../../../providers/auth-service/auth-service';
+import { AuthServiceProvider } from '../../../providers/provider';
 
 
 @IonicPage()
@@ -13,7 +13,6 @@ import { AuthServiceProvider } from '../../../providers/auth-service/auth-servic
 export class ForgotPage {
 
   resetPasswordForm;
-  backgroundImage = './assets/img/bg1.jpg';
 
   constructor(public formBuilder: FormBuilder,
     public navCtrl: NavController,
