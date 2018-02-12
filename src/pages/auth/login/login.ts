@@ -13,7 +13,7 @@ import {
   AppStateServiceProvider,
   AuthServiceProvider,
   StorageHelperProvider
-} from "../../../providers/provider";
+} from "../../../providers/providers";
 
 @IonicPage()
 @Component({

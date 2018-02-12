@@ -26,4 +26,18 @@ page-product-list {
         -moz-transform: rotateZ(45deg);
         -o-transform: rotateZ(45deg);
     }
+    #cartbutton {            
+        position: relative;
+        width: 42px;
+        top:1px;
+        right: 1px;
+        overflow: visible!important;
+    }
+    #cartbadge {
+        background-color: red;
+        position: absolute;
+        top: -3px;
+        right: -3px;
+        border-radius: 100%;
+    }
 }

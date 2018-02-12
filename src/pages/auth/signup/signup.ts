@@ -7,7 +7,7 @@ import { PasswordValidator } from '../../../validators/password-validator';
 import { LoadingController } from 'ionic-angular/components/loading/loading-controller';
 import * as firebase from 'firebase';
 import { IProfile } from '../../../models/profile';
-import { AuthServiceProvider } from '../../../providers/provider';
+import { AuthServiceProvider } from '../../../providers/providers';
 
 @IonicPage()
 @Component({

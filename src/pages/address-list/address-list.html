@@ -2,7 +2,7 @@
     <h4>User Addresses</h4>
     <ion-list *ngIf="hasAddresses">
         <button ion-item *ngFor="let address of addressList" (click)="selectAddress(address)">
-            <ion-icon name="locate" item-start></ion-icon>
+            <ion-icon [name]="address.isDefault? 'locate': 'ios-locate-outline'" item-start></ion-icon>
             <h2>{{address.street}}</h2>
             <p>{{address.city}}, {{address.region}} {{address.zip}}</p>
             <h2>{{address.country}}</h2>

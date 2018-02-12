@@ -6,6 +6,13 @@
     <ion-title>
       Snowflake Tours
     </ion-title>
+    <ion-buttons right>
+      <button ion-button icon-only *ngIf="lastCartItem" id="cartbutton" (click)="openCartItem()">
+        <ion-icon name="cart">
+          <ion-badge id="cartbadge" color="accent">1</ion-badge>
+        </ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
@@ -29,14 +36,12 @@
           <ion-row no-padding>
             <ion-col text-left col-6>
               <button ion-button clear small color="danger" icon-start>
-                Discount
-                {{product.discount * 100}} %
+                Discount {{product.discount * 100}} %
               </button>
             </ion-col>
             <ion-col text-right col-6>
               <button ion-button clear small color="danger" icon-start>
-                Price 
-                {{product.price | currency:'INR':true}}
+                Price {{product.price | currency:'INR':'symbol'}}
               </button>
             </ion-col>
           </ion-row>

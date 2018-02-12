@@ -39,12 +39,19 @@ export class AuthServiceProvider {
   }
 
   logoutUser(): Promise<any> {
-    this.appState.clearData();
-    if (!this.appState.userProfile) {
-      this.events.publish("user:logout", this.appState.userProfile);
-    }
-    console.log("user logedout...");
-    return this.afAuth.auth.signOut();
+    console.log("user loge out...");
+    return this.afAuth.auth
+      .signOut()
+      .then(() => {
+        console.log("Logged out.");
+        this.appState.clearData();
+        if (!this.appState.userProfile) {
+          this.events.publish("user:logout", this.appState.userProfile);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 
   registerUser(email: string, password: string): Promise<any> {
@@ -52,12 +59,19 @@ export class AuthServiceProvider {
   }
 
   updateUserProfile(userProfile: IProfile, uid: string): Promise<any> {
-    return this.afDb.object(`${this.basePath}/${uid}`).set(userProfile);
+    return this.afDb
+      .object(`${this.basePath}/${uid}`)
+      .set(userProfile)
+      .then(data => {
+        this.events.publish("profile:updated");
+      });
   }
 
   updateProfileProps(userId, value) {
     const profRef = this.afDb.object(`/${this.basePath}/${userId}`);
-    profRef.update(value);
+    profRef.update(value).then(() => {
+      this.events.publish("profile:updated");
+    });
   }
 
   deleteUserProfile(uid: string): Promise<any> {
@@ -93,7 +107,7 @@ export class AuthServiceProvider {
     return new Promise(resolve => {
       const profRef = this.afDb.object(`/${this.basePath}/${uid}`);
 
-      profRef.snapshotChanges().subscribe(profData => {
+      const profSubs = profRef.snapshotChanges().subscribe(profData => {
         const userProfile = profData.payload.val();
         if (userProfile) {
           this.appState.userProfile = userProfile;
@@ -102,6 +116,7 @@ export class AuthServiceProvider {
             this.events.publish("profile:recieved", this.appState.userProfile);
           }
           resolve(userProfile);
+          profSubs.unsubscribe();
         }
       });
     });
@@ -111,8 +126,5 @@ export class AuthServiceProvider {
     this.getUserProfile(uid).then(() => {
       this.appState.loginState = true;
     });
-  }
-  private clearAuthState(uid) {
-    this.appState.clearData();
   }
 }

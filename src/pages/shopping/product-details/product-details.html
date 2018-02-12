@@ -47,14 +47,14 @@
             </ion-col>
             <ion-col text-right>
               <button ion-button clear small color="danger" icon-start style="text-decoration: line-through;">
-                {{product?.price | currency:'INR':true}}
+                {{product?.price | currency:'INR':'symbol'}}
               </button>
             </ion-col>
           </ion-row>
           <ion-row no-padding>
             <ion-col text-left>
               <button ion-button clear small color="primary" icon-start>
-                {{product?.discountPrice | currency:'INR':true}}
+                {{product?.discountPrice | currency:'INR':'symbol'}}
               </button>
             </ion-col>
             <ion-col text-right>

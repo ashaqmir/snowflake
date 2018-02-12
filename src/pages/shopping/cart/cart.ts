@@ -1,20 +1,21 @@
-import { Component } from "@angular/core";
+import { Component, Injector } from "@angular/core";
 import {
   IonicPage,
   NavController,
   NavParams,
   LoadingController,
-  ModalController,
-  Events
+  ModalController
 } from "ionic-angular";
+import * as moment from "moment";
 import { IProduct, IProfile, IAddress } from "../../../models/models";
-import { AngularFireAuth } from "angularfire2/auth";
 import { AngularFireDatabase } from "angularfire2/database";
 import {
   AppStateServiceProvider,
   AuthServiceProvider
-} from "../../../providers/provider";
+} from "../../../providers/providers";
+import { isAuthorized } from "../../../decorators/isAuthorized";
 
+@isAuthorized
 @IonicPage()
 @Component({
   selector: "page-cart",
@@ -26,17 +27,28 @@ export class CartPage {
   userProfile: IProfile;
   shippingAddress: IAddress;
   currentPersons: number;
+  addAdultStep = 0;
   finalPricePerPerson: number;
   totalPrice: number;
   private appState: any;
   authSubs: any;
+
+  currentKids = 0;
+  perKidPrice = 0.0;
+
+  arrivalOnDate: any;
+  arrivalOnTime: any;
+  minDate: any;
+  maxDate: any;
+  advanceDays = 7;
+
+  disablePayment = true;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     private loadingCtrl: LoadingController,
     public modelCtrl: ModalController,
-    private events: Events,
-    private afAuth: AngularFireAuth,
+    public injector: Injector,
     private afDb: AngularFireDatabase,
     private authProvider: AuthServiceProvider,
     appState: AppStateServiceProvider
@@ -44,32 +56,36 @@ export class CartPage {
     this.appState = appState;
     this.product = this.navParams.get("selectedProduct");
     if (this.product) {
+      this.addAdultStep = this.product.personAddOption;
+
       this.currentPersons = this.product.pricefor;
       console.log(`CURRENT PERSONS: ${this.currentPersons}`);
+      if (this.product.childrenAllowed) {
+        this.currentKids = this.product.children;
+        this.perKidPrice =
+          this.product.finalPrice /
+          this.product.pricefor *
+          this.product.childPriceFactor;
+      }
       this.finalPricePerPerson =
         this.product.finalPrice / this.product.pricefor;
+
       console.log(`PER PERSON: ${this.finalPricePerPerson}`);
       this.totalPrice = this.product.finalPrice;
       console.log(`TOTAL FOR GROUP: ${this.totalPrice}`);
     }
+    this.setMinMaxDates();
+    console.log(this.minDate);
   }
 
   ionViewCanEnter() {
-    return this.appState.loginState;
-  }
-  ionViewDidLoad() {
-    console.log("ionViewDidLoad CartPage");
+    //return this.appState.loginState;
   }
 
   ionViewWillLoad() {
-    let loadingPopup = this.loadingCtrl.create({
-      spinner: "crescent",
-      content: ""
-    });
-    loadingPopup.present();
-
     if (this.appState.userProfile && this.appState.loginState) {
       this.userProfile = this.appState.userProfile;
+      this.uid = this.userProfile.$key;
       if (this.userProfile.Addresses) {
         if (this.userProfile.Addresses.length == 1) {
           this.shippingAddress = this.userProfile.Addresses[0];
@@ -78,38 +94,9 @@ export class CartPage {
             adr => adr.isDefault
           );
         }
+        this.disablePayment = false;
       }
-      loadingPopup.dismiss();
-    } else {
-      console.log(" I was in cart auth false");
-      loadingPopup.dismiss();
-      this.navCtrl.setRoot("LoginPage");
     }
-    // this.afAuth.authState.subscribe(userAuth => {
-    //   if (userAuth) {
-    //     this.uid = userAuth.uid;
-    //     this.userProfile = this.appState.userProfile;
-    //     console.log(this.userProfile);
-
-    //     if (this.userProfile) {
-    //       console.log("Shout out");
-    //       if (this.userProfile.Addresses) {
-    //         if (this.userProfile.Addresses.length == 1) {
-    //           this.shippingAddress = this.userProfile.Addresses[0];
-    //         } else {
-    //           this.shippingAddress = this.userProfile.Addresses.find(
-    //             adr => adr.isDefault
-    //           );
-    //         }
-    //       }
-    //     }
-    //     loadingPopup.dismiss();
-    //   } else {
-    //     console.log(" I was in cart auth false");
-    //     loadingPopup.dismiss();
-    //     this.navCtrl.setRoot("LoginPage");
-    //   }
-    // });
   }
   addAddress() {
     let addressModel = this.modelCtrl.create("AddressFormPage");
@@ -160,6 +147,7 @@ export class CartPage {
                   adr => adr.isDefault
                 );
               }
+              this.disablePayment = false;
             }
           }
           loadingPopup.dismiss();
@@ -190,28 +178,44 @@ export class CartPage {
       }
     }
   }
-  removePersons() {
-    const step = this.product.personAddOption;
-    const personFor = this.currentPersons - step;
-    console.log(personFor);
-    if (personFor >= this.product.pricefor) {
-      this.currentPersons = personFor;
-
-      this.totalPrice = this.finalPricePerPerson * personFor;
-      //this.product.finalPrice = totalPrice;
-      console.log(`Total Price for group: ${this.totalPrice}`);
-    }
+  kidsChanged() {
+    this.calculateTotalPrice();
   }
-  addPersons() {
-    const step = this.product.personAddOption;
-    const personFor = this.currentPersons + step;
-    console.log(personFor);
-    if (personFor >= this.product.pricefor) {
-      this.currentPersons = personFor;
 
-      this.totalPrice = this.finalPricePerPerson * personFor;
-      //this.product.finalPrice = totalPrice;
-      console.log(`Total Price for group: ${this.totalPrice}`);
+  personChanged() {
+    this.calculateTotalPrice();
+  }
+
+  calculateTotalPrice() {
+    const adultPrice = this.finalPricePerPerson * this.currentPersons;
+    let kidsPrice = 0.0;
+    if (
+      this.product.childrenAllowed &&
+      this.product.children > 0 &&
+      this.currentKids > this.product.children
+    ) {
+      const kidsAdded = this.currentKids - this.product.children;
+      kidsPrice = this.perKidPrice * kidsAdded;
+    } else if (
+      this.product.childrenAllowed &&
+      this.currentKids > this.product.children
+    ) {
+      kidsPrice = this.perKidPrice * this.currentKids;
     }
+
+    this.totalPrice = adultPrice + kidsPrice;
+  }
+
+  setMinMaxDates() {
+    const today = moment();
+    this.minDate = today.add(this.advanceDays, "d").format("YYYY-MM-DD");
+    this.maxDate = today.add(this.advanceDays, "M").format("YYYY-MM-DD");
+    this.arrivalOnDate = this.minDate;
+    this.arrivalOnTime = today.format("HH:mm");
+
+    console.log(this.minDate);
+    console.log(this.maxDate);
+    console.log(this.arrivalOnDate);
+    console.log(this.arrivalOnTime);
   }
 }

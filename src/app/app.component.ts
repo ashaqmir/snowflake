@@ -9,8 +9,6 @@ import {
 } from "ionic-angular";
 import { StatusBar } from "@ionic-native/status-bar";
 import { SplashScreen } from "@ionic-native/splash-screen";
-import { AuthServiceProvider } from "../providers/auth-service/auth-service";
-import { AppStateServiceProvider } from "../providers/app-state-service/app-state-service";
 import {
   FormBuilder,
   FormGroup,
@@ -18,7 +16,11 @@ import {
   Validators
 } from "@angular/forms";
 import { IProfile } from "../models/profile";
-import { StorageHelperProvider } from "../providers/storage-helper/storage-helper";
+import {
+  AuthServiceProvider,
+  StorageHelperProvider,
+  AppStateServiceProvider
+} from "../providers/providers";
 
 @Component({
   templateUrl: "app.html"
@@ -73,6 +75,19 @@ export class MyApp {
       }
     });
 
+    this.events.subscribe("profile:updated", () => {
+      console.log("Profile Updated");
+      if (this.user && this.user.$key)
+        this.authProvider.getUserProfile(this.user.$key).then(data => {
+          if (data) {
+            this.user = data as IProfile;
+            if (this.appState) {
+              this.appState.userProfile = this.user;
+            }
+          }
+        });
+    });
+
     this.user = this.appState.userProfile;
     if (this.user && this.user.profilePicUrl) {
       this.userProfImage = this.user.profilePicUrl;
@@ -105,7 +120,7 @@ export class MyApp {
               this.user = this.appState.userProfile;
               console.log(this.appState.userProfile);
               if (this.appState.userProfile) {
-                console.log("Profile loade");
+                console.log("Profile loaded");
                 if (this.rememberMe) {
                   this.storageProvider.setLastUser({
                     email: email,

@@ -9,10 +9,12 @@ import {
 } from "ionic-angular";
 import { AngularFireDatabase } from "angularfire2/database";
 import { AngularFireAuth } from "angularfire2/auth";
-import { AppStateServiceProvider } from "../../providers/app-state-service/app-state-service";
-import { AuthServiceProvider } from "../../providers/auth-service/auth-service";
 import { IProfile } from "../../models/profile";
-import { ImageProvider } from "../../providers/image-provider/image-provider";
+import {
+  AppStateServiceProvider,
+  AuthServiceProvider,
+  ImageProvider
+} from "../../providers/providers";
 
 @IonicPage()
 @Component({
@@ -40,26 +42,12 @@ export class UserProfilePage {
   ) {
     this.appState = appState;
   }
-  ionViewWillLoad() {
-    this.afAuth.authState.subscribe(userAuth => {
-      if (userAuth) {
-        this.email = this.afAuth.auth.currentUser.email;
-        if (this.appState.userProfile) {
-          this.userProfile = this.appState.userProfile;
-          if (this.userProfile && this.userProfile.profilePicUrl) {
-            this.profilePicture = this.userProfile.profilePicUrl;
-          }
-        } else {
-          console.log("auth false");
-          this.navCtrl.setRoot("LoginPage");
-        }
-      } else {
-        console.log("auth false");
-        this.navCtrl.setRoot("LoginPage");
-      }
-    });
+  ionViewWillLoad() {   
+    this.userProfile = this.appState.userProfile;
   }
-
+  ionViewCanEnter() {
+    return this.appState.loginState;
+  }
   presentAlert(title) {
     let alert = this.alertCtrl.create({
       title: title,
@@ -131,7 +119,7 @@ export class UserProfilePage {
                 lastName: data.lastName
               });
               this.userProfile = this.appState.userProfile;
-            }           
+            }
           }
         }
       ]

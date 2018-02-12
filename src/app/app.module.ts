@@ -16,7 +16,7 @@ import {
   StorageHelperProvider,
   ImageProvider,
   ProductServiceProvider
-} from "../providers/provider";
+} from "../providers/providers";
 import { ProductListPageModule } from "../pages/shopping/product-list/product-list.module";
 import { Camera } from "@ionic-native/camera";
 

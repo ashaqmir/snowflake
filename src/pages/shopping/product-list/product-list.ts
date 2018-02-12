@@ -1,13 +1,12 @@
 import { Component } from "@angular/core";
-import {
-  IonicPage,
-  NavController,
-  NavParams
-} from "ionic-angular";
+import { IonicPage, NavController, NavParams, Events } from "ionic-angular";
 import { LoadingController } from "ionic-angular/components/loading/loading-controller";
 import { Observable } from "rxjs/Observable";
 import { IProduct } from "../../../models/product";
-import { ProductServiceProvider } from "../../../providers/provider";
+import {
+  ProductServiceProvider,
+  StorageHelperProvider
+} from "../../../providers/providers";
 
 @IonicPage()
 @Component({
@@ -16,12 +15,14 @@ import { ProductServiceProvider } from "../../../providers/provider";
 })
 export class ProductListPage {
   products: Observable<IProduct[]>;
-
+  lastCartItem: any;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     public loadingCtrl: LoadingController,
-    private prodSvc: ProductServiceProvider
+    public events: Events,
+    private prodSvc: ProductServiceProvider,
+    private storageHelper: StorageHelperProvider
   ) {}
 
   ngOnInit() {
@@ -33,15 +34,36 @@ export class ProductListPage {
 
     this.products = this.prodSvc.getProductsList();
 
+    this.events.subscribe("cart:itemChanged", product => {
+      if (product) {
+        this.lastCartItem = product as IProduct;
+      }
+    });
     loadingPopup.dismiss();
   }
 
+  ionViewDidLoad() {
+    this.storageHelper.getItem("lastCartItem").then(item => {
+      console.log(item);
+      if (item) {
+        this.lastCartItem = item as IProduct;
+        console.log(this.lastCartItem);
+      }
+    });
+  }
   productDetails(product) {
     if (product) {
       if (product.$key) {
         console.log(product);
         this.navCtrl.push("ProductDetailsPage", { selectedProduct: product });
       }
+    }
+  }
+
+  openCartItem() {
+    if (this.lastCartItem) {
+      console.log(this.lastCartItem);
+      this.navCtrl.push("CartPage", { selectedProduct: this.lastCartItem });
     }
   }
 }
