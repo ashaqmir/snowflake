@@ -19,6 +19,7 @@ import {
 } from "../providers/providers";
 import { ProductListPageModule } from "../pages/shopping/product-list/product-list.module";
 import { Camera } from "@ionic-native/camera";
+import { OrderServiceProvider } from '../providers/order-service/order-service';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBxDGtr-xtsPUNY5-LNvaQQCWT6ug8T3W8",
@@ -53,7 +54,8 @@ const firebaseConfig = {
     AppStateServiceProvider,
     AuthServiceProvider,
     StorageHelperProvider,
-    ImageProvider
+    ImageProvider,
+    OrderServiceProvider
   ]
 })
 export class AppModule {}

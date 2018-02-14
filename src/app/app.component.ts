@@ -123,8 +123,8 @@ export class MyApp {
                 console.log("Profile loaded");
                 if (this.rememberMe) {
                   this.storageProvider.setLastUser({
-                    email: email,
-                    password: password
+                    userName: email,
+                    userPwd: password
                   });
                 } else {
                   this.storageProvider.removeLastUser();
@@ -220,10 +220,9 @@ export class MyApp {
     });
 
     this.storageProvider.getLastUser().then(lstUsr => {
-      console.log(lstUsr);
-      if (lstUsr && lstUsr.email && lstUsr.password) {
-        this.loginForm.get("email").setValue(lstUsr.email);
-        this.loginForm.get("password").setValue(lstUsr.password);
+      if (lstUsr && lstUsr.userName && lstUsr.userPwd) {
+        this.loginForm.get("email").setValue(lstUsr.userName);
+        this.loginForm.get("password").setValue(lstUsr.userPwd);
       }
     });
   }

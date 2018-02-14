@@ -7,13 +7,14 @@ import {
   ModalController
 } from "ionic-angular";
 import * as moment from "moment";
-import { IProduct, IProfile, IAddress } from "../../../models/models";
-import { AngularFireDatabase } from "angularfire2/database";
+import { IProduct, IProfile, IAddress, IOrder } from "../../../models/models";
 import {
   AppStateServiceProvider,
-  AuthServiceProvider
+  AuthServiceProvider,
+  OrderServiceProvider
 } from "../../../providers/providers";
 import { isAuthorized } from "../../../decorators/isAuthorized";
+
 
 @isAuthorized
 @IonicPage()
@@ -43,14 +44,15 @@ export class CartPage {
   advanceDays = 7;
 
   disablePayment = true;
+  orderDetails: IOrder = new IOrder();
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     private loadingCtrl: LoadingController,
     public modelCtrl: ModalController,
     public injector: Injector,
-    private afDb: AngularFireDatabase,
     private authProvider: AuthServiceProvider,
+    private ordrService: OrderServiceProvider,
     appState: AppStateServiceProvider
   ) {
     this.appState = appState;
@@ -59,6 +61,8 @@ export class CartPage {
       this.addAdultStep = this.product.personAddOption;
 
       this.currentPersons = this.product.pricefor;
+      this.orderDetails.Package = Object.assign({}, this.product);
+
       console.log(`CURRENT PERSONS: ${this.currentPersons}`);
       if (this.product.childrenAllowed) {
         this.currentKids = this.product.children;
@@ -86,6 +90,9 @@ export class CartPage {
     if (this.appState.userProfile && this.appState.loginState) {
       this.userProfile = this.appState.userProfile;
       this.uid = this.userProfile.$key;
+      this.orderDetails.customerId = this.userProfile.$key;
+      this.orderDetails.customerEmail = this.userProfile.email;
+
       if (this.userProfile.Addresses) {
         if (this.userProfile.Addresses.length == 1) {
           this.shippingAddress = this.userProfile.Addresses[0];
@@ -95,6 +102,7 @@ export class CartPage {
           );
         }
         this.disablePayment = false;
+        this.orderDetails.customerAddress = this.shippingAddress;
       }
     }
   }
@@ -148,6 +156,7 @@ export class CartPage {
                 );
               }
               this.disablePayment = false;
+              this.orderDetails.customerAddress = this.shippingAddress;
             }
           }
           loadingPopup.dismiss();
@@ -171,6 +180,7 @@ export class CartPage {
         addressModel.onDidDismiss(data => {
           if (data && data.address) {
             this.shippingAddress = data.address;
+            this.orderDetails.customerAddress = this.shippingAddress;
           }
         });
 
@@ -217,5 +227,26 @@ export class CartPage {
     console.log(this.maxDate);
     console.log(this.arrivalOnDate);
     console.log(this.arrivalOnTime);
+  }
+
+  submitOrder() {
+    this.orderDetails.customerAddress = this.shippingAddress;
+    this.orderDetails.adults = this.currentPersons;
+    this.orderDetails.children = this.currentKids;
+    this.orderDetails.customerPaid = this.totalPrice;
+
+    this.orderDetails.paymentType = 'Cash On Arrival';
+    this.orderDetails.paymentState = 'Not Paid';
+
+    this.orderDetails.arrivalDate = this.arrivalOnDate;
+    this.orderDetails.arrivalTime = this.arrivalOnTime;
+
+    delete this.orderDetails.Package.$key;
+
+    console.log('Order Details');
+    console.log(this.orderDetails);
+    console.log('Product')
+    console.log(this.product);
+    this.ordrService.createOrder(this.orderDetails);
   }
 }

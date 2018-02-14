@@ -2,10 +2,11 @@
   "ExpandedNodes": [
     "",
     "\\src",
-    "\\src\\pages",
+    "\\src\\models",
     "\\src\\pages\\shopping",
+    "\\src\\pages\\shopping\\cart",
     "\\src\\pages\\shopping\\product-list"
   ],
-  "SelectedNode": "\\src\\pages\\shopping\\product-list\\product-list.ts",
+  "SelectedNode": "\\src\\models\\models.ts",
   "PreviewInSolutionExplorer": false
 }

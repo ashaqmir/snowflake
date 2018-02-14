@@ -65,8 +65,8 @@ export class LoginPage {
       .getLastUser()
       .then(data => {
         if (data) {
-          this.loginForm.get("email").setValue(data.email);
-          this.loginForm.get("password").setValue(data.password);
+          this.loginForm.get("email").setValue(data.userName);
+          this.loginForm.get("password").setValue(data.userPwd);
         }
       })
       .catch(error => {
