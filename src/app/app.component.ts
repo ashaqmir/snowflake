@@ -111,7 +111,8 @@ export class MyApp {
       this.authProvider
         .loginUser(email, password)
         .then(data => {
-          let emailVerified = data.emailVerified;
+          //let emailVerified = data.emailVerified;
+          let emailVerified = true;
           if (emailVerified) {
             this.appState.loginState = true;
             console.log(data.uid);
@@ -231,7 +232,7 @@ export class MyApp {
     this.menuItems = [
       {
         icon: "cart",
-        name: "Your Packages",
+        name: "My Tours",
         componentName: "ProductListPage",
         type: "page",
         isActive: false
@@ -240,13 +241,6 @@ export class MyApp {
         icon: "person",
         name: "Profile",
         componentName: "UserProfilePage",
-        type: "page",
-        isActive: false
-      },
-      {
-        icon: "settings",
-        name: "Preference",
-        componentName: "PreferencesPage",
         type: "page",
         isActive: false
       },

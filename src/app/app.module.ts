@@ -21,6 +21,7 @@ import { ProductListPageModule } from "../pages/shopping/product-list/product-li
 import { Camera } from "@ionic-native/camera";
 import { OrderServiceProvider } from '../providers/order-service/order-service';
 
+
 const firebaseConfig = {
   apiKey: "AIzaSyBxDGtr-xtsPUNY5-LNvaQQCWT6ug8T3W8",
     authDomain: "snowflake-tours-travels.firebaseapp.com",

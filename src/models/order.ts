@@ -6,6 +6,8 @@ export class IOrder {
   customerEmail: string;
   customerAddress: IAddress;
 
+  reference: string;
+
   Package: IProduct;
   adults: number;
   children: number;
@@ -16,4 +18,6 @@ export class IOrder {
 
   arrivalDate: string;
   arrivalTime: string;
+
+  paymentId: string;
 }

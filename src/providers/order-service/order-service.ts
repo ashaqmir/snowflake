@@ -1,4 +1,4 @@
-import { AppStateServiceProvider } from './../app-state-service/app-state-service';
+import { AppStateServiceProvider } from "./../app-state-service/app-state-service";
 import { Injectable } from "@angular/core";
 import { AngularFireList, AngularFireDatabase } from "angularfire2/database";
 import { IOrder } from "../../models/models";
@@ -6,18 +6,21 @@ import { Observable } from "rxjs/Observable";
 
 @Injectable()
 export class OrderServiceProvider {
-  basePath: string;
+  basePath = "/Orders/";
   orderRef: AngularFireList<IOrder>;
 
   private appState: any;
-  constructor(private afDb: AngularFireDatabase,
-    appState: AppStateServiceProvider) {
+  constructor(
+    private afDb: AngularFireDatabase,
+    appState: AppStateServiceProvider
+  ) {
     this.appState = appState;
-    this.createBaseRef();
+    this.orderRef = afDb.list(this.basePath);
+    //this.createBaseRef();
   }
 
   getUserOrders(uid: string): Observable<IOrder[]> {
-    this.createBaseRef();
+    //this.createBaseRef();
     return this.orderRef.snapshotChanges().map(arr => {
       return arr.map(snap =>
         Object.assign(snap.payload.val(), { $key: snap.key })
@@ -34,7 +37,7 @@ export class OrderServiceProvider {
   }
 
   createOrder(order: IOrder): PromiseLike<any> {
-    this.createBaseRef();
+    //this.createBaseRef();
     return this.orderRef.push(order).then(ordr => {
       if (ordr) {
         return ordr;
@@ -42,15 +45,19 @@ export class OrderServiceProvider {
     });
   }
 
-  createBaseRef() {
-    if (!this.basePath) {
-      if (this.appState && this.appState.userProfile && this.appState.userProfile.$key) {
-        this.basePath = `/Orders/${this.appState.userProfile.$key}`;
-        if (this.basePath) {
-          console.log('Creating base reference for order.')
-          this.orderRef = this.afDb.list(this.basePath);
-        }
-      }
-    }
-  }
+  // createBaseRef() {
+  //   if (
+  //     this.appState &&
+  //     this.appState.userProfile &&
+  //     this.appState.userProfile.$key
+  //   ) {
+  //     console.log(`User Key:${this.appState.userProfile.$key}`);
+
+  //     this.basePath = `/Orders/${this.appState.userProfile.$key}`;
+  //     if (this.basePath) {
+  //       console.log("Creating base reference for order.");
+  //       this.orderRef = this.afDb.list(this.basePath);
+  //     }
+  //   }
+  // }
 }

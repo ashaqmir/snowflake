@@ -1,4 +1,4 @@
-import { Component, Injector } from "@angular/core";
+import { Injector } from "@angular/core";
 import { NavController } from "ionic-angular";
 import { AppStateServiceProvider } from "../providers/providers";
 

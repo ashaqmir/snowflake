@@ -1,0 +1,62 @@
+<ion-header>
+  <ion-navbar color="ios-yellow">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>
+      THANK YOU
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+
+<ion-content padding>
+  <ion-card *ngIf="loadView">
+    <ion-card-header>
+      Order Details
+    </ion-card-header>
+    <ion-card-content>      
+
+      <ion-grid>
+        <ion-row class="my-border">
+          <ion-col col-4>
+            <h2>Package Ref#</h2>
+          </ion-col>
+          <ion-col col-8 class="ringer">
+            <h3>{{order.productReference}}</h3>
+          </ion-col>
+        </ion-row>
+        <ion-row class="my-border">
+          <ion-col col-4>
+            <h2>Amount Paid</h2>
+          </ion-col>
+          <ion-col col-8>
+            <h3>
+              <strong>{{order.amountPaid | currency:'USD':true }}</strong>
+            </h3>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      Dear
+      <strong>{{userLastName}},</strong>
+    </ion-card-header>
+    <ion-card-content>
+      <p>Thank you. Snowflake will make sure that your trip becomes a memory to cherish for.</p>
+
+      <p>We will contact you shortly.</p>
+
+      <p>
+        <strong>Snoflake Tours</strong>
+      </p>
+    </ion-card-content>
+  </ion-card>
+  <button ion-button round full primary icon-left (click)="goHome()">
+    <ion-icon name="home"></ion-icon>
+    HOME
+  </button>
+</ion-content>

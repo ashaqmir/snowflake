@@ -4,17 +4,20 @@ import {
   NavController,
   NavParams,
   LoadingController,
-  ModalController
+  ModalController,
+  AlertController
 } from "ionic-angular";
 import * as moment from "moment";
 import { IProduct, IProfile, IAddress, IOrder } from "../../../models/models";
 import {
   AppStateServiceProvider,
   AuthServiceProvider,
-  OrderServiceProvider
+  OrderServiceProvider,
+  StorageHelperProvider
 } from "../../../providers/providers";
 import { isAuthorized } from "../../../decorators/isAuthorized";
 
+declare var RazorpayCheckout: any;
 
 @isAuthorized
 @IonicPage()
@@ -24,7 +27,6 @@ import { isAuthorized } from "../../../decorators/isAuthorized";
 })
 export class CartPage {
   product: IProduct;
-  uid: string;
   userProfile: IProfile;
   shippingAddress: IAddress;
   currentPersons: number;
@@ -45,14 +47,19 @@ export class CartPage {
 
   disablePayment = true;
   orderDetails: IOrder = new IOrder();
+
+  paymentOptions: any;
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     private loadingCtrl: LoadingController,
     public modelCtrl: ModalController,
+    public alertCtrl: AlertController,
     public injector: Injector,
     private authProvider: AuthServiceProvider,
     private ordrService: OrderServiceProvider,
+    private storageHelper: StorageHelperProvider,
     appState: AppStateServiceProvider
   ) {
     this.appState = appState;
@@ -89,7 +96,6 @@ export class CartPage {
   ionViewWillLoad() {
     if (this.appState.userProfile && this.appState.loginState) {
       this.userProfile = this.appState.userProfile;
-      this.uid = this.userProfile.$key;
       this.orderDetails.customerId = this.userProfile.$key;
       this.orderDetails.customerEmail = this.userProfile.email;
 
@@ -103,6 +109,37 @@ export class CartPage {
         }
         this.disablePayment = false;
         this.orderDetails.customerAddress = this.shippingAddress;
+
+        const customerName = `${this.userProfile.firstName} ${
+          this.userProfile.lastName
+        }`;
+        this.paymentOptions = {
+          description: "Credits towards service",
+          image: "../../../assets/imgs/package.png",
+          currency: "INR",
+          key: "rzp_test_3aC2S00lzpyhCs",
+          //amount: this.orderDetails.customerPaid.toFixed(2).toString(),
+          amount: "",
+          name: customerName,
+          prefill: {
+            email: this.userProfile.email,
+            contact: this.userProfile.phone,
+            name: customerName
+          },
+          theme: {
+            color: "#F37254"
+          },
+          modal: {
+            ondismiss: function() {
+              let cancelAlert = this.alertCtrl.create({
+                title: "Payment canceled!",
+                subTitle: "Payment was canceled!",
+                buttons: ["OK"]
+              });
+              cancelAlert.present();
+            }
+          }
+        };
       }
     }
   }
@@ -137,13 +174,14 @@ export class CartPage {
       });
     }
 
+    const uid = this.userProfile.$key;
     this.userProfile.Addresses.push(address);
     this.userProfile.$key = undefined;
     delete this.userProfile.$key;
     this.authProvider
-      .updateUserProfile(this.userProfile, this.uid)
+      .updateUserProfile(this.userProfile, uid)
       .then(() => {
-        this.authProvider.getUserProfile(this.uid).then(profile => {
+        this.authProvider.getUserProfile(uid).then(profile => {
           this.userProfile = profile;
           if (this.userProfile) {
             console.log("Shout out again");
@@ -235,18 +273,78 @@ export class CartPage {
     this.orderDetails.children = this.currentKids;
     this.orderDetails.customerPaid = this.totalPrice;
 
-    this.orderDetails.paymentType = 'Cash On Arrival';
-    this.orderDetails.paymentState = 'Not Paid';
+    this.orderDetails.paymentType = "Cash On Arrival";
+    this.orderDetails.paymentState = "Not Paid";
 
     this.orderDetails.arrivalDate = this.arrivalOnDate;
     this.orderDetails.arrivalTime = this.arrivalOnTime;
 
+    this.orderDetails.reference = `[${this.product.name}][${
+      this.totalPrice
+    }][${new Date().toString()}]`;
     delete this.orderDetails.Package.$key;
 
-    console.log('Order Details');
-    console.log(this.orderDetails);
-    console.log('Product')
+    console.log("Product");
     console.log(this.product);
-    this.ordrService.createOrder(this.orderDetails);
+
+    const cutomerPays =
+      Math.round(this.orderDetails.customerPaid).toString() + "00";
+    console.log(cutomerPays);
+    if (this.orderDetails) {
+      let loadingPopup = this.loadingCtrl.create({
+        spinner: "crescent",
+        content: ""
+      });
+      loadingPopup.present();
+
+      console.log(this.orderDetails);
+      //INTIALIZE PAYMENT
+      this.paymentOptions.amount = cutomerPays;
+      if (this.paymentOptions && this.paymentOptions.amount) {
+        var successCallback = function(payment_id) {
+          this.orderDetails.paymentState = "Authorized";
+          this.orderDetails.paymentType = "Razor";
+          this.orderDetails.paymentId = payment_id;
+          this.saveOrderToDb(this.orderDetails).then(res => {
+            this.navCtrl.setRoot("OrderFinalPage", {
+              finalOrder: this.orderDetails,
+              userLastName: this.userProfile.lastName
+            });
+          });
+        }.bind(this);
+
+        var cancelCallback = function(error) {
+          const oopsAlert = this.alertCtrl.create({
+            title: "Oops!",
+            subTitle: "Something went wrong. Please try again later.",
+            buttons: ["OK"]
+          });
+          oopsAlert.present();
+        }.bind(this);
+
+        RazorpayCheckout.open(
+          this.paymentOptions,
+          successCallback,
+          cancelCallback
+        );
+      }
+      loadingPopup.dismiss();
+    }
+  }
+
+  saveOrderToDb(orderDetails): Promise<boolean> {
+    console.log("Order Details");
+    console.log(this.orderDetails);
+
+    return new Promise((resolve, reject) => {
+      this.ordrService.createOrder(this.orderDetails).then(res => {
+        if (res) {
+          this.storageHelper.removeItem("lastCartItem");
+          return resolve(true);
+        } else {
+          return reject(true);
+        }
+      });
+    });
   }
 }

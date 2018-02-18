@@ -8,9 +8,9 @@ import {
 
 import {
   FormGroup,
-  FormBuilder,
   FormControl,
-  Validators
+  Validators,
+  FormBuilder
 } from "@angular/forms";
 import Countries from "../../models/country-regions";
 import { IAddress } from "../../models/models";

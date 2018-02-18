@@ -5,7 +5,6 @@ import { PasswordValidator } from '../../../validators/password-validator';
 
 
 import { LoadingController } from 'ionic-angular/components/loading/loading-controller';
-import * as firebase from 'firebase';
 import { IProfile } from '../../../models/profile';
 import { AuthServiceProvider } from '../../../providers/providers';
 
@@ -59,19 +58,21 @@ export class SignupPage {
           this.authProvider.loginUser(email, password)
             .then(data => {
               this.authProvider.updateUserProfile(this.profile, data.uid).then(data => {
-                let user: any = firebase.auth().currentUser;
-                user.sendEmailVerification().then(
-                  (success) => {
-                    //Show toast and redirect to login
-                    this.toast.create({
-                      message: 'Verification mail sent, Please verify your email',
-                      duration: 4000
-                    }).present();
-                    this.navCtrl.setRoot('LoginPage');
-                    console.log("please verify your email")
-                  }).catch((err) => {
-                    console.log(err)
-                  });
+
+                //###########USE THIS IN PROD ONLY
+                // let user: any = firebase.auth().currentUser;
+                // user.sendEmailVerification().then(
+                //   (success) => {
+                //     //Show toast and redirect to login
+                //     this.toast.create({
+                //       message: 'Verification mail sent, Please verify your email',
+                //       duration: 4000
+                //     }).present();
+                //     this.navCtrl.setRoot('LoginPage');
+                //     console.log("please verify your email")
+                //   }).catch((err) => {
+                //     console.log(err)
+                //   });
                 //this.navCtrl.setRoot(ConsumerProfilePage, { profile: this.profile });
                 if (removePop) {
                   loadingPopup.dismiss()
