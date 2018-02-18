@@ -89,8 +89,11 @@ export class CartPage {
     console.log(this.minDate);
   }
 
-  ionViewCanEnter() {
-    //return this.appState.loginState;
+  ionViewDidLoad() {
+    this.appState.currentView = "CartPage";
+  }
+  ionViewDidLeave() {
+    this.appState.currentView = "";
   }
 
   ionViewWillLoad() {

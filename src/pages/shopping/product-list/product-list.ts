@@ -5,7 +5,8 @@ import { Observable } from "rxjs/Observable";
 import { IProduct } from "../../../models/product";
 import {
   ProductServiceProvider,
-  StorageHelperProvider
+  StorageHelperProvider,
+  AppStateServiceProvider
 } from "../../../providers/providers";
 
 @IonicPage()
@@ -16,14 +17,18 @@ import {
 export class ProductListPage {
   products: Observable<IProduct[]>;
   lastCartItem: any;
+  private appState: any;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     public loadingCtrl: LoadingController,
     public events: Events,
     private prodSvc: ProductServiceProvider,
-    private storageHelper: StorageHelperProvider
-  ) {}
+    private storageHelper: StorageHelperProvider,
+    appState: AppStateServiceProvider
+  ) {
+    this.appState = appState;
+  }
 
   ngOnInit() {
     let loadingPopup = this.loadingCtrl.create({
@@ -50,6 +55,11 @@ export class ProductListPage {
         console.log(this.lastCartItem);
       }
     });
+    this.appState.currentView = "ProductListPage";
+  }
+
+  ionViewDidLeave() {
+    this.appState.currentView = "";
   }
   productDetails(product) {
     if (product) {

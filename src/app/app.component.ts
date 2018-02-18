@@ -63,6 +63,7 @@ export class MyApp {
 
     this.createMenuItems();
     this.hookupMenuFunctionality();
+    this.appState.currentView = 'ProductListPage';
   }
 
   hookupMenuFunctionality() {
@@ -177,14 +178,34 @@ export class MyApp {
   }
   openPage(page) {
     if (page.type === "page") {
+      console.log(page);
       this.updateActive();
       page.isActive = true;
-      this.nav
-        .push(page.componentName)
-        .then(val => {
-          this.menuCtrl.close();
-        })
-        .catch(err => console.error(err));
+      if (
+        this.appState.currentView != page.componentName &&
+        page.componentName != "ProductListPage"
+      ) {
+        this.nav
+          .push(page.componentName)
+          .then(val => {
+            console.log(page.componentName);
+            this.menuCtrl.close();
+            this.appState.currentView = page.componentName;
+          })
+          .catch(err => console.error(err));
+      } else if (
+        this.appState.currentView != page.componentName &&
+        page.componentName == "ProductListPage"
+      ) {
+        this.nav
+          .setRoot(page.componentName)
+          .then(val => {
+            console.log(page.componentName);
+            this.menuCtrl.close();
+            this.appState.currentView = page.componentName;
+          })
+          .catch(err => console.error(err));
+      }
       this.menuCtrl.close();
     } else if (page.type.startsWith("action")) {
       this.doAction(page.type);
@@ -231,9 +252,16 @@ export class MyApp {
   createMenuItems() {
     this.menuItems = [
       {
+        icon: "home",
+        name: "Home",
+        componentName: "ProductListPage",
+        type: "page",
+        isActive: true
+      },
+      {
         icon: "cart",
         name: "My Tours",
-        componentName: "ProductListPage",
+        componentName: "UserOrdersPage",
         type: "page",
         isActive: false
       },

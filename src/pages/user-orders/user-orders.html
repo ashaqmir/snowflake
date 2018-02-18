@@ -1,18 +1,48 @@
-<!--
-  Generated template for the UserOrdersPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
-
-  <ion-navbar>
-    <ion-title>userOrders</ion-title>
+  <ion-navbar color="ios-yellow">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>
+      Your Tour Packages
+    </ion-title>
   </ion-navbar>
-
 </ion-header>
 
 
 <ion-content padding>
-
+  <ion-grid>
+    <ion-row *ngFor="let order of orders | async">
+      <div col-12>
+        <ion-card>
+          <ion-card-header>
+            {{order.Package.shortDescription}}
+          </ion-card-header>
+          <ion-card-content>
+            <ion-note>{{order.reference}}</ion-note>
+          </ion-card-content>
+          <ion-row>
+            <ion-col text-left>
+              <ion-note>Price</ion-note>
+              <ion-badge color="danger">{{order.Package.finalPrice | currency:'INR':'symbol'}}</ion-badge>
+            </ion-col>
+            <ion-col text-right>
+              <ion-note>You Paid</ion-note>
+              <ion-badge color="danger">{{order.customerPaid | currency:'INR':'symbol'}}</ion-badge>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col text-left>
+              <ion-note>Adult(s)</ion-note>
+              <ion-badge color="primary">{{order.adults}}</ion-badge>
+            </ion-col>
+            <ion-col text-right>
+              <ion-note>Children</ion-note>
+              <ion-badge color="primary">{{order.children}}</ion-badge>
+            </ion-col>
+          </ion-row>
+        </ion-card>
+      </div>
+    </ion-row>
+  </ion-grid>
 </ion-content>

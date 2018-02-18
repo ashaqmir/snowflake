@@ -164,12 +164,14 @@ ion-navbar {
       background: none;
       &.activated {
         background: $SIDEMENU_TRANSPARENCY;
+        color: red;
       }
     }
     &.active-page-highlight {
       .item-content {
         background: $SIDEMENU_TRANSPARENCY;
       }
+      color: red;
     }
   }
 }

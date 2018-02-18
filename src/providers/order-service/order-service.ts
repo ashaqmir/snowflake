@@ -15,17 +15,18 @@ export class OrderServiceProvider {
     appState: AppStateServiceProvider
   ) {
     this.appState = appState;
-    this.orderRef = afDb.list(this.basePath);
-    //this.createBaseRef();
   }
 
   getUserOrders(uid: string): Observable<IOrder[]> {
     //this.createBaseRef();
-    return this.orderRef.snapshotChanges().map(arr => {
-      return arr.map(snap =>
-        Object.assign(snap.payload.val(), { $key: snap.key })
-      );
-    });
+    return this.afDb
+      .list(this.basePath, ref => ref.orderByChild("customerId").equalTo(uid))
+      .snapshotChanges()
+      .map(arr => {
+        return arr.map(snap =>
+          Object.assign(snap.payload.val(), { $key: snap.key })
+        );
+      });
   }
 
   getUserOrder(key: string): Observable<IOrder | null> {
@@ -44,20 +45,4 @@ export class OrderServiceProvider {
       }
     });
   }
-
-  // createBaseRef() {
-  //   if (
-  //     this.appState &&
-  //     this.appState.userProfile &&
-  //     this.appState.userProfile.$key
-  //   ) {
-  //     console.log(`User Key:${this.appState.userProfile.$key}`);
-
-  //     this.basePath = `/Orders/${this.appState.userProfile.$key}`;
-  //     if (this.basePath) {
-  //       console.log("Creating base reference for order.");
-  //       this.orderRef = this.afDb.list(this.basePath);
-  //     }
-  //   }
-  // }
 }

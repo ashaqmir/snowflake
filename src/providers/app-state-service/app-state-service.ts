@@ -1,6 +1,6 @@
 import { Events } from 'ionic-angular';
 import { Injectable } from '@angular/core';
-import { IProfile } from '../../models/profile';
+import { IProfile } from '../../models/models';
 
 
 @Injectable()
@@ -10,7 +10,6 @@ export class AppStateServiceProvider {
   userProfile: IProfile;
 
   localStorageProfile: IProfile;
-  userOrders: any[];
   currentView: string;
   constructor(public events: Events) {   
   }
@@ -20,7 +19,6 @@ export class AppStateServiceProvider {
   clearData() {
     this.loginState = false;
     this.userProfile = null;
-    this.userOrders = null;
     
   }
 }

@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, Injector } from "@angular/core";
 import {
   IonicPage,
   NavController,
@@ -15,7 +15,9 @@ import {
   AuthServiceProvider,
   ImageProvider
 } from "../../providers/providers";
+import { isAuthorized } from "../../decorators/isAuthorized";
 
+@isAuthorized
 @IonicPage()
 @Component({
   selector: "page-user-profile",
@@ -24,7 +26,6 @@ import {
 export class UserProfilePage {
   profilePicture: any = "./assets/imgs/chatterplace.png";
   userProfile: IProfile;
-  email: any;
   profileChanged: boolean = false;
   private appState: any;
 
@@ -33,7 +34,8 @@ export class UserProfilePage {
     public alertCtrl: AlertController,
     public loadingCtrl: LoadingController,
     public actionSheetCtrl: ActionSheetController,
-    private toastCtrl: ToastController,
+    public toastCtrl: ToastController,
+    public injector: Injector,
     appState: AppStateServiceProvider,
     public afAuth: AngularFireAuth,
     public afDb: AngularFireDatabase,
@@ -42,12 +44,17 @@ export class UserProfilePage {
   ) {
     this.appState = appState;
   }
-  ionViewWillLoad() {   
+  ionViewWillLoad() {
     this.userProfile = this.appState.userProfile;
   }
-  ionViewCanEnter() {
-    return this.appState.loginState;
+
+  ionViewDidLoad() {
+    this.appState.currentView = "UserProfilePage";
   }
+  ionViewDidLeave() {
+    this.appState.currentView = "";
+  }
+
   presentAlert(title) {
     let alert = this.alertCtrl.create({
       title: title,
