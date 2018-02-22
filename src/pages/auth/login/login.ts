@@ -98,8 +98,8 @@ export class LoginPage {
       this.authProvider
         .loginUser(email, password)
         .then(data => {
-          //let emailVerified = data.emailVerified;
-          let emailVerified = true;
+          let emailVerified = data.emailVerified;
+          //let emailVerified = true;
           if (emailVerified) {
             this.appState.loginState = true;
             console.log(data.uid);

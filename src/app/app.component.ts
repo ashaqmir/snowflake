@@ -112,8 +112,8 @@ export class MyApp {
       this.authProvider
         .loginUser(email, password)
         .then(data => {
-          //let emailVerified = data.emailVerified;
-          let emailVerified = true;
+          let emailVerified = data.emailVerified;
+          //let emailVerified = true;
           if (emailVerified) {
             this.appState.loginState = true;
             console.log(data.uid);
@@ -170,6 +170,7 @@ export class MyApp {
         })
         .present();
     }
+    this.menuCtrl.close();
   }
   goToSignup() {
     this.nav.push("SignupPage").then(() => {

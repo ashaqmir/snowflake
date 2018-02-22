@@ -29,7 +29,10 @@ export class AuthServiceProvider {
       .signInWithEmailAndPassword(newEmail, newPassword)
       .then(uState => {
         console.log(uState.uid);
-        this.setAuthState(uState.uid);
+        console.log(uState.emailVerified);
+        if (uState.emailVerified) {
+          this.setAuthState(uState.uid);
+        }
         return uState;
       });
   }
@@ -59,12 +62,19 @@ export class AuthServiceProvider {
   }
 
   updateUserProfile(userProfile: IProfile, uid: string): Promise<any> {
-    return this.afDb
-      .object(`${this.basePath}/${uid}`)
-      .set(userProfile)
-      .then(data => {
-        this.events.publish("profile:updated");
-      });
+    return new Promise((resolve, reject) => {
+      this.afDb
+        .object(`${this.basePath}/${uid}`)
+        .set(userProfile)
+        .then(() => {
+          this.events.publish("profile:updated");
+          console.log("Profile Saved");
+          resolve(userProfile);
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
   }
 
   updateProfileProps(userId, value) {

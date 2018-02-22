@@ -79,6 +79,7 @@ export class ProductListPage {
   openCartItem() {
     if (this.lastCartItem) {
       console.log(this.lastCartItem);
+      console.log('going to cart');
       this.navCtrl.push("CartPage", { selectedProduct: this.lastCartItem });
     }
   }

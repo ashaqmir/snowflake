@@ -38,7 +38,9 @@ export class ProductDetailsPage {
       this.storageHelper.setItem("lastCartItem", this.product);
       this.events.publish("cart:itemChanged", this.product);
     }
+    console.log('step1');
     if (this.appState.loginState) {
+      console.log('step2');
       this.navCtrl.push("CartPage", { selectedProduct: this.product });
     } else {
       this.navCtrl.setRoot("LoginPage");
