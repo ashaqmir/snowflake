@@ -46,6 +46,9 @@ export class UserProfilePage {
   }
   ionViewWillLoad() {
     this.userProfile = this.appState.userProfile;
+    if (this.userProfile && this.userProfile.profilePicUrl) {
+      this.profilePicture = this.userProfile.profilePicUrl;
+    }
   }
 
   ionViewDidLoad() {
@@ -141,15 +144,20 @@ export class UserProfilePage {
         if (imgData) {
           this.profilePicture = imgData;
           this.profileChanged = true;
+          console.log("Got Image data");
+        } else {
+          console.log("No Image data");
         }
       })
       .catch(error => {
+        console.log("change Error");
         console.log(error);
       });
   }
 
   saveProfileImage() {
     if (this.profilePicture) {
+      console.log("Saving image");
       this.authProvider.uploadImage(this.profilePicture, this.userProfile.$key);
       this.profileChanged = false;
     }

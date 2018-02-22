@@ -52,6 +52,8 @@ export class MyApp {
     this.appState = appState;
     this.rememberMe = true;
     this.createForm();
+    this.createMenuItems();
+    this.hookupMenuFunctionality();
     platform.ready().then(() => {
       this.initializeApp();
     });
@@ -59,10 +61,7 @@ export class MyApp {
 
   initializeApp() {
     this.statusBar.styleDefault();
-    this.splashScreen.hide();
-
-    this.createMenuItems();
-    this.hookupMenuFunctionality();
+    this.splashScreen.hide();    
     this.appState.currentView = 'ProductListPage';
   }
 

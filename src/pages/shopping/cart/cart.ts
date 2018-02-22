@@ -108,7 +108,7 @@ export class CartPage {
     this.paymentMethods.push({
       method: "razor",
       title: "RazorPay",
-      disabled: true
+      disabled: false
     });
   }
   ionViewDidLoad() {
@@ -327,7 +327,7 @@ export class CartPage {
       console.log(this.orderDetails);
       //HOOKUP PAYMENT EVENTS
 
-      if (this.paymentMethod && this.paymentMethod === "razorpay") {
+      if (this.paymentMethod && this.paymentMethod === "razor") {
         this.paymentOptions.amount = cutomerPays;
         if (this.paymentOptions && this.paymentOptions.amount) {
           var successCallback = function(payment_id) {
@@ -352,10 +352,9 @@ export class CartPage {
             oopsAlert.present();
           }.bind(this);
 
+          console.log('Checking platform ready');
           this.platform.ready().then(() => {
-            console.log(`IOS: ${this.platform.is("ios")}`);
-            console.log(`Android: ${this.platform.is("android")}`);
-            console.log(`Cordova: ${this.platform.is("cordova")}`);
+            console.log('Plat is Ready');
             console.log(RazorpayCheckout);
             if (RazorpayCheckout) {
               RazorpayCheckout.open(
@@ -364,6 +363,9 @@ export class CartPage {
                 cancelCallback
               );
             }
+          }).catch(err => {
+            console.log('Plat is not Ready');
+            console.log(err);
           });
         }
       }

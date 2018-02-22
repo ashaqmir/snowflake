@@ -100,10 +100,13 @@ export class AuthServiceProvider {
       .putString(image, "data_url")
       .then(data => {
         if (data) {
+          console.log('good things happen');
           const profRef = this.afDb.object(`/${this.basePath}/${userId}`);
           profRef.update({ profilePicUrl: data.downloadURL });
           this.getUserProfile(userId);
           loadingPopup.dismiss();
+        } else {
+          console.log('something is wrong');
         }
       })
       .catch(error => {

@@ -59,7 +59,7 @@
                 </ion-item>
             </ion-list>
         </div>
-        <div class="list-box" showWhen="ios" *ngIf="user">
+        <div class="list-box" showWhen="ios" *ngIf="user">            
             <ion-list>
                 <ion-item menuClose (click)="openPage(menu)" class="side-menu-item" tappable *ngFor="let menu of menuItems">
                     <ion-icon [name]="menu.icon" color="danger" item-left></ion-icon>
