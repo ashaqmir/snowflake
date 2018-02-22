@@ -38,33 +38,51 @@
 
             </ion-list>
           </ion-card-content>
-
-          <ion-row no-padding>
-            <ion-col text-left>
-              
-              <button ion-button clear small color="danger" icon-start>
-                {{product?.discount * 100}} %
-              </button>
-            </ion-col>
-            <ion-col text-right>
-              <button ion-button clear small color="danger" icon-start style="text-decoration: line-through;">
-                {{product?.price | currency:'INR':'symbol'}}
-              </button>
-            </ion-col>
-          </ion-row>
-          <ion-row no-padding>
-            <ion-col text-left>
-              <button ion-button clear small color="primary" icon-start>
-                {{product?.discountPrice | currency:'INR':'symbol'}}
-              </button>
-            </ion-col>
-            <ion-col text-right>
-              <button ion-button clear small color="primary" icon-start>
-                <ion-icon name="people"></ion-icon>
-                {{product?.pricefor}} Person(s)
-              </button>
-            </ion-col>
-          </ion-row>
+          <ion-item>
+            <ion-row>
+              <ion-col text-left col-6>
+                <h3>Discount</h3>
+              </ion-col>
+              <ion-col text-right col-6>
+                <h3>Price</h3>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col text-left>
+                <ion-badge color="danger">
+                  {{product?.discount * 100}} %
+                </ion-badge>
+              </ion-col>
+              <ion-col text-right>
+                <ion-badge color="danger" style="text-decoration: line-through;">
+                  {{product?.price | currency:'INR':'symbol'}}
+                </ion-badge>
+              </ion-col>
+            </ion-row>
+          </ion-item>
+          <ion-item>
+            <ion-row>
+              <ion-col text-left col-6>
+                <h3>Discounted Price</h3>
+              </ion-col>
+              <ion-col text-right col-6>
+                <h3>Person(s)</h3>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col text-left>
+                <ion-badge color="primary">
+                  {{product?.discountPrice | currency:'INR':'symbol'}}
+                </ion-badge>
+              </ion-col>
+              <ion-col text-right>
+                <ion-badge color="danger">
+                  <ion-icon name="people"></ion-icon>
+                  {{product?.pricefor}}
+                </ion-badge>
+              </ion-col>
+            </ion-row>
+          </ion-item>
         </ion-card>
       </div>
     </ion-row>

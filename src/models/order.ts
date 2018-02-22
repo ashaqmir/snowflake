@@ -20,4 +20,6 @@ export class IOrder {
   arrivalTime: string;
 
   paymentId: string;
+
+  createdAt: any;
 }

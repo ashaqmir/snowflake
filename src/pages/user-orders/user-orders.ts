@@ -16,30 +16,43 @@ import { Observable } from "rxjs/Observable";
 })
 export class UserOrdersPage {
   private appState: any;
-  orders: Observable<IOrder[]>;
+  userOrders: Observable<IOrder[]>;
+  hasOrders = false;
+  observerRef: any;
   constructor(
     public navCtrl: NavController,
-    public navParams: NavParams,    
+    public navParams: NavParams,
     public injector: Injector,
     private ordrService: OrderServiceProvider,
     appState: AppStateServiceProvider
   ) {
-    this.appState = appState;   
+    this.appState = appState;
   }
 
   ionViewWillLoad() {
     console.log("User Packages page");
-    if (this.appState && this.appState.userProfile) {
-      this.orders = this.ordrService.getUserOrders(
-        this.appState.userProfile.$key
-      );
-    }
   }
 
   ionViewDidLoad() {
     this.appState.currentView = "UserOrdersPage";
+    if (this.appState && this.appState.userProfile) {
+      this.userOrders = this.ordrService.getUserOrders(
+        this.appState.userProfile.$key
+      );
+
+      this.observerRef = this.userOrders.subscribe(data => {
+        if (data && data.length > 0) {
+          this.hasOrders = true;
+        } else {
+          this.hasOrders = false;
+        }
+      });
+    }
   }
   ionViewDidLeave() {
     this.appState.currentView = "";
+    if (this.observerRef) {
+      this.observerRef.unsubscribe();
+    }
   }
 }

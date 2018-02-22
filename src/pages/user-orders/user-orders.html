@@ -11,8 +11,8 @@
 
 
 <ion-content padding>
-  <ion-grid>
-    <ion-row *ngFor="let order of orders | async">
+  <ion-grid *ngIf="hasOrders">
+    <ion-row *ngFor="let order of userOrders | async">
       <div col-12>
         <ion-card>
           <ion-card-header>
@@ -24,20 +24,32 @@
           <ion-row>
             <ion-col text-left>
               <ion-note>Price</ion-note>
-              <ion-badge color="danger">{{order.Package.finalPrice | currency:'INR':'symbol'}}</ion-badge>
             </ion-col>
             <ion-col text-right>
               <ion-note>You Paid</ion-note>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col text-left>
+              <ion-badge color="danger">{{order.Package.finalPrice | currency:'INR':'symbol'}}</ion-badge>
+            </ion-col>
+            <ion-col text-right>
               <ion-badge color="danger">{{order.customerPaid | currency:'INR':'symbol'}}</ion-badge>
             </ion-col>
           </ion-row>
           <ion-row>
             <ion-col text-left>
               <ion-note>Adult(s)</ion-note>
-              <ion-badge color="primary">{{order.adults}}</ion-badge>
             </ion-col>
             <ion-col text-right>
               <ion-note>Children</ion-note>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col text-left>
+              <ion-badge color="primary">{{order.adults}}</ion-badge>
+            </ion-col>
+            <ion-col text-right>
               <ion-badge color="primary">{{order.children}}</ion-badge>
             </ion-col>
           </ion-row>
@@ -45,4 +57,12 @@
       </div>
     </ion-row>
   </ion-grid>
+  <ion-card *ngIf="!hasOrders">
+    <ion-card-header>
+      No tour packages found
+    </ion-card-header>
+    <ion-card-content>
+      <ion-note>Book some package(s) and enjou our hospitality.</ion-note>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
