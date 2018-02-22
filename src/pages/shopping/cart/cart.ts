@@ -5,7 +5,8 @@ import {
   NavParams,
   LoadingController,
   ModalController,
-  AlertController
+  AlertController,
+  Platform
 } from "ionic-angular";
 import * as moment from "moment";
 import { IProduct, IProfile, IAddress, IOrder } from "../../../models/models";
@@ -49,7 +50,8 @@ export class CartPage {
   orderDetails: IOrder = new IOrder();
 
   paymentOptions: any;
-
+  paymentMethods: any[];
+  paymentMethod: string;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -57,6 +59,7 @@ export class CartPage {
     public modelCtrl: ModalController,
     public alertCtrl: AlertController,
     public injector: Injector,
+    public platform: Platform,
     private authProvider: AuthServiceProvider,
     private ordrService: OrderServiceProvider,
     private storageHelper: StorageHelperProvider,
@@ -87,8 +90,27 @@ export class CartPage {
     }
     this.setMinMaxDates();
     console.log(this.minDate);
+
+    this.paymentMethods = [];
   }
 
+  ngOnInit() {
+    this.paymentMethods.push({
+      method: "bacs",
+      title: "Direct Bank Transfer",
+      disabled: false
+    });
+    this.paymentMethods.push({
+      method: "poa",
+      title: "Payment on Arrival",
+      disabled: false
+    });
+    this.paymentMethods.push({
+      method: "razor",
+      title: "RazorPay",
+      disabled: true
+    });
+  }
   ionViewDidLoad() {
     this.appState.currentView = "CartPage";
   }
@@ -116,6 +138,7 @@ export class CartPage {
         const customerName = `${this.userProfile.firstName} ${
           this.userProfile.lastName
         }`;
+        //INTIALIZE PAYMENT
         this.paymentOptions = {
           description: "Credits towards service",
           image: "../../../assets/imgs/package.png",
@@ -276,7 +299,7 @@ export class CartPage {
     this.orderDetails.children = this.currentKids;
     this.orderDetails.customerPaid = this.totalPrice;
 
-    this.orderDetails.paymentType = "Cash On Arrival";
+    this.orderDetails.paymentType = this.paymentMethod;
     this.orderDetails.paymentState = "Not Paid";
 
     this.orderDetails.arrivalDate = this.arrivalOnDate;
@@ -289,6 +312,7 @@ export class CartPage {
 
     console.log("Product");
     console.log(this.product);
+    console.log(`Payment Method: ${this.paymentMethod}`);
 
     const cutomerPays =
       Math.round(this.orderDetails.customerPaid).toString() + "00";
@@ -301,36 +325,64 @@ export class CartPage {
       loadingPopup.present();
 
       console.log(this.orderDetails);
-      //INTIALIZE PAYMENT
-      this.paymentOptions.amount = cutomerPays;
-      if (this.paymentOptions && this.paymentOptions.amount) {
-        var successCallback = function(payment_id) {
-          this.orderDetails.paymentState = "Authorized";
-          this.orderDetails.paymentType = "Razor";
-          this.orderDetails.paymentId = payment_id;
-          this.saveOrderToDb(this.orderDetails).then(res => {
-            this.navCtrl.setRoot("OrderFinalPage", {
-              finalOrder: this.orderDetails,
-              userLastName: this.userProfile.lastName
+      //HOOKUP PAYMENT EVENTS
+
+      if (this.paymentMethod && this.paymentMethod === "razorpay") {
+        this.paymentOptions.amount = cutomerPays;
+        if (this.paymentOptions && this.paymentOptions.amount) {
+          var successCallback = function(payment_id) {
+            this.orderDetails.paymentState = "Authorized";
+            this.orderDetails.paymentType = "Razor";
+            this.orderDetails.paymentId = payment_id;
+            this.saveOrderToDb(this.orderDetails).then(res => {
+              this.navCtrl.setRoot("OrderFinalPage", {
+                finalOrder: this.orderDetails,
+                userLastName: this.userProfile.lastName,
+                payOption: this.paymentMethod
+              });
             });
-          });
-        }.bind(this);
+          }.bind(this);
 
-        var cancelCallback = function(error) {
-          const oopsAlert = this.alertCtrl.create({
-            title: "Oops!",
-            subTitle: "Something went wrong. Please try again later.",
-            buttons: ["OK"]
-          });
-          oopsAlert.present();
-        }.bind(this);
+          var cancelCallback = function(error) {
+            const oopsAlert = this.alertCtrl.create({
+              title: "Oops!",
+              subTitle: "Something went wrong. Please try again later.",
+              buttons: ["OK"]
+            });
+            oopsAlert.present();
+          }.bind(this);
 
-        RazorpayCheckout.open(
-          this.paymentOptions,
-          successCallback,
-          cancelCallback
-        );
+          this.platform.ready().then(() => {
+            console.log(`IOS: ${this.platform.is("ios")}`);
+            console.log(`Android: ${this.platform.is("android")}`);
+            console.log(`Cordova: ${this.platform.is("cordova")}`);
+            console.log(RazorpayCheckout);
+            if (RazorpayCheckout) {
+              RazorpayCheckout.open(
+                this.paymentOptions,
+                successCallback,
+                cancelCallback
+              );
+            }
+          });
+        }
       }
+      if (
+        this.paymentMethod &&
+        (this.paymentMethod === "bacs" || this.paymentMethod === "poa")
+      ) {
+        this.orderDetails.paymentState = "Processing";
+        this.orderDetails.paymentType = this.paymentMethod;
+        this.orderDetails.paymentId = this.paymentMethod;
+        this.saveOrderToDb(this.orderDetails).then(res => {
+          this.navCtrl.setRoot("OrderFinalPage", {
+            finalOrder: this.orderDetails,
+            userLastName: this.userProfile.lastName,
+            payOption: this.paymentMethod
+          });
+        });
+      }
+
       loadingPopup.dismiss();
     }
   }

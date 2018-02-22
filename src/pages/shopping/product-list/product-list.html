@@ -19,35 +19,55 @@
 
 <ion-content padding>
 
+  <ion-card>
+    <ion-slides *ngIf="banners" loop="true" pager="true">
+      <ion-slide *ngFor="let banner of banners | async">
+        <img [src]="banner.url" style="display:block;margin:auto auto;" />
+      </ion-slide>
+    </ion-slides>
+  </ion-card>
+
+  <ion-list style="margin-bottom:0;">
+    <ion-item-divider color="danger">Latest Products</ion-item-divider>
+  </ion-list>
+
   <ion-grid>
     <ion-row>
-      <div col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 *ngFor="let product of products | async">
-        <ion-card tappable (click)="productDetails(product)">
-          <img [src]="product.images[0].url" />
-          <ion-card-content>
-            <ion-card-title>
-              {{product.shortDescription}}
-            </ion-card-title>
-            <p>
-              {{product.longDescriptions}}
-            </p>
-          </ion-card-content>
+      <ion-slides slidesPerView=1 #productSlides>
+        <ng-container *ngFor="let product of products | async">          
+          <ion-slide>
+            <ion-row>
+              <ion-col>
+                <ion-card tappable (click)="productDetails(product)">
+                  <img [src]="product.images[0].url" style="display:block;margin:auto auto;" />
+                  <ion-card-content>
+                    <ion-card-title>
+                      {{product.shortDescription}}
+                    </ion-card-title>
+                    <p style="text-align:justify">
+                      {{product.longDescriptions}}
+                    </p>
+                  </ion-card-content>
 
-          <ion-row no-padding>
-            <ion-col text-left col-6>
-              <button ion-button clear small color="danger" icon-start>
-                Discount {{product.discount * 100}} %
-              </button>
-            </ion-col>
-            <ion-col text-right col-6>
-              <button ion-button clear small color="danger" icon-start>
-                Price {{product.price | currency:'INR':'symbol'}}
-              </button>
-            </ion-col>
-          </ion-row>
-        </ion-card>
-      </div>
+                  <ion-row no-padding>
+                    <ion-col text-left col-6>
+                      <button ion-button clear small color="danger" icon-start>
+                        Discount {{product.discount * 100}} %
+                      </button>
+                    </ion-col>
+                    <ion-col text-right col-6>
+                      <button ion-button clear small color="danger" icon-start>
+                        Price {{product.price | currency:'INR':'symbol'}}
+                      </button>
+                    </ion-col>
+                  </ion-row>
+                </ion-card>
+              </ion-col>
+            </ion-row>
+          </ion-slide>
+        </ng-container>
+      </ion-slides>
     </ion-row>
   </ion-grid>
-
 </ion-content>
+

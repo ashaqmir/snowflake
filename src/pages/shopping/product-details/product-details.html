@@ -41,6 +41,7 @@
 
           <ion-row no-padding>
             <ion-col text-left>
+              
               <button ion-button clear small color="danger" icon-start>
                 {{product?.discount * 100}} %
               </button>
@@ -73,7 +74,7 @@
   <ion-toolbar color="red">
     <button ion-button full clear icon-left (click)="addToCart()" color="light" [disabled]="!product">
       <ion-icon name="ios-cart"></ion-icon>
-      Buy
+      Buy Package
     </button>
   </ion-toolbar>
 </ion-footer>

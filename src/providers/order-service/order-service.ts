@@ -15,6 +15,7 @@ export class OrderServiceProvider {
     appState: AppStateServiceProvider
   ) {
     this.appState = appState;
+    this.orderRef = afDb.list(this.basePath);
   }
 
   getUserOrders(uid: string): Observable<IOrder[]> {

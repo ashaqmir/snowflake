@@ -20,6 +20,7 @@ import {
 import { ProductListPageModule } from "../pages/shopping/product-list/product-list.module";
 import { Camera } from "@ionic-native/camera";
 import { OrderServiceProvider } from '../providers/order-service/order-service';
+import { BannerServiceProvider } from '../providers/banner-service/banner-service';
 
 
 const firebaseConfig = {
@@ -56,7 +57,8 @@ const firebaseConfig = {
     AuthServiceProvider,
     StorageHelperProvider,
     ImageProvider,
-    OrderServiceProvider
+    OrderServiceProvider,
+    BannerServiceProvider
   ]
 })
 export class AppModule {}

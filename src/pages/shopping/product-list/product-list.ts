@@ -6,8 +6,10 @@ import { IProduct } from "../../../models/product";
 import {
   ProductServiceProvider,
   StorageHelperProvider,
-  AppStateServiceProvider
+  AppStateServiceProvider,
+  BannerServiceProvider
 } from "../../../providers/providers";
+import { IBannerImage } from "../../../models/models";
 
 @IonicPage()
 @Component({
@@ -16,6 +18,8 @@ import {
 })
 export class ProductListPage {
   products: Observable<IProduct[]>;
+  banners: Observable<IBannerImage[]>;
+
   lastCartItem: any;
   private appState: any;
   constructor(
@@ -24,6 +28,7 @@ export class ProductListPage {
     public loadingCtrl: LoadingController,
     public events: Events,
     private prodSvc: ProductServiceProvider,
+    private bnrSvc: BannerServiceProvider,
     private storageHelper: StorageHelperProvider,
     appState: AppStateServiceProvider
   ) {
@@ -38,7 +43,8 @@ export class ProductListPage {
     loadingPopup.present();
 
     this.products = this.prodSvc.getProductsList();
-
+    this.banners = this.bnrSvc.getBannerList();
+    
     this.events.subscribe("cart:itemChanged", product => {
       if (product) {
         this.lastCartItem = product as IProduct;

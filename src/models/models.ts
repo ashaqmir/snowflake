@@ -4,3 +4,4 @@ export * from './product-image';
 export * from './product';
 export * from './profile';
 export * from './order';
+export * from './banner-image'

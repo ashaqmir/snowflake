@@ -16,7 +16,7 @@
     <ion-card-header>
       Order Details
     </ion-card-header>
-    <ion-card-content>      
+    <ion-card-content>
 
       <ion-grid>
         <ion-row class="my-border">
@@ -24,16 +24,16 @@
             <h2>Package Ref#</h2>
           </ion-col>
           <ion-col col-8 class="ringer">
-            <h3>{{order.productReference}}</h3>
+            <h3>{{order.reference}}</h3>
           </ion-col>
         </ion-row>
         <ion-row class="my-border">
           <ion-col col-4>
-            <h2>Amount Paid</h2>
+            <h2>Amount</h2>
           </ion-col>
           <ion-col col-8>
             <h3>
-              <strong>{{order.amountPaid | currency:'USD':true }}</strong>
+              <strong>{{order.customerPaid | currency:'USD':true }}</strong>
             </h3>
           </ion-col>
         </ion-row>
@@ -46,13 +46,7 @@
       <strong>{{userLastName}},</strong>
     </ion-card-header>
     <ion-card-content>
-      <p>Thank you. Snowflake will make sure that your trip becomes a memory to cherish for.</p>
-
-      <p>We will contact you shortly.</p>
-
-      <p>
-        <strong>Snoflake Tours</strong>
-      </p>
+      <span [innerHTML]="userMessage?.message"></span>
     </ion-card-content>
   </ion-card>
   <button ion-button round full primary icon-left (click)="goHome()">
